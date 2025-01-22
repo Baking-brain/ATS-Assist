@@ -1,0 +1,10 @@
+# created by virtualenv automatically
+*.env
+
+venv/
+
+__pycache__/
+*.pyc
+*.pyo
+
+*djangosrc/api/migrations/
