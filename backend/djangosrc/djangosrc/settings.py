@@ -10,9 +10,10 @@ For the full list of settings and their values, see
 https://docs.djangoproject.com/en/5.1/ref/settings/
 """
 
+from datetime import timedelta
 from pathlib import Path
-import json
 from decouple import config
+import json
 import pymysql
 pymysql.install_as_MySQLdb()
 
@@ -44,6 +45,7 @@ INSTALLED_APPS = [
     'django.contrib.staticfiles',
 
     #Imported
+    'rest_framework_simplejwt',
     'rest_framework',
     'corsheaders',
 
@@ -61,6 +63,22 @@ MIDDLEWARE = [
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
 ]
+
+# Configure REST framework
+REST_FRAMEWORK = {
+    'DEFAULT_AUTHENTICATION_CLASSES': [
+        'rest_framework_simplejwt.authentication.JWTAuthentication',
+        'api.authentication.custom_jwtauthentication',
+    ],
+}
+
+# Optional JWT settings to control token expiration and behavior
+SIMPLE_JWT = {
+    'ACCESS_TOKEN_LIFETIME': timedelta(minutes=5),  # Expiration time for the access token
+    'REFRESH_TOKEN_LIFETIME': timedelta(minutes=10),     # Expiration time for the refresh token
+    'ROTATE_REFRESH_TOKENS': True,  # Use refresh tokens to rotate the access token
+    'BLACKLIST_AFTER_ROTATION': True,  # Blacklist old refresh tokens after they are rotated
+}
 
 ROOT_URLCONF = 'djangosrc.urls'
 
@@ -93,6 +111,8 @@ DATABASES = {
 
 # Password validation
 # https://docs.djangoproject.com/en/5.1/ref/settings/#auth-password-validators
+
+AUTH_USER_MODEL = 'api.Applicant'
 
 AUTH_PASSWORD_VALIDATORS = [
     {
