@@ -16,9 +16,23 @@ Including another URLconf
 """
 from django.contrib import admin
 from django.urls import path
-from api.views import test_view
+from api import views
 
 urlpatterns = [
     path('admin/', admin.site.urls),
-    path('', test_view.as_view()),
+    path('', views.test_view.as_view()),
+
+    #Applicants
+    path('api/get_applicants', views.get_applicants.as_view()),
+    path('api/create_applicant', views.create_applicant.as_view()),
+    path('api/get_profile', views.get_profile.as_view()),
+
+    #Log in-out
+    path('api/login', views.login.as_view()),
+    path('api/logout', views.logout.as_view()),
+
+    #Refresh Token
+    path('api/refresh_token', views.refresh_token.as_view()),
+
+    
 ]
