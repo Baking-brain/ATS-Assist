@@ -1,0 +1,41 @@
+.content-block {
+    display: flex;
+    flex-direction: column;
+    gap: 16px;
+    /* Equivalent to Tailwind's gap-4 */
+}
+
+.content-box {
+    width: 100%;
+    background-color: #C4A484;
+    border-radius: 8px;
+}
+
+.content-box.full-height {
+    height: calc(100% + 5rem);
+}
+
+.content-box.square {
+    aspect-ratio: 1 / 1;
+}
+
+.button-container {
+    display: flex;
+    gap: 16px;
+}
+
+.content-button {
+    flex: 1;
+    height: 64px;
+    /* Equivalent to Tailwind's h-16 */
+    background-color: #3D2A27;
+    border-radius: 8px;
+    border: none;
+    color: white;
+    cursor: pointer;
+    transition: opacity 0.2s ease-in-out;
+}
+
+.content-button:hover {
+    opacity: 0.9;
+}
