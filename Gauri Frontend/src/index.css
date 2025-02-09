@@ -5,7 +5,7 @@
     font-family: Arial, sans-serif;
 }
 
-/*background color and full height */
+
 body {
     background-color: #F5F5DC;
     min-height: 100vh;
@@ -14,7 +14,7 @@ body {
     justify-content: center;
 }
 
-/*full width */
+
 #root {
     width: 100%;
 }

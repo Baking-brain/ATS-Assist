@@ -1,6 +1,6 @@
 import { useState, useRef } from "react";
 import { ChevronDown, ChevronUp } from "lucide-react";
-import "./resume-upload.css"; // Import the new CSS file
+import "./resume-upload.css"; 
 
 export default function ResumeUpload() {
   const [isOpen, setIsOpen] = useState(false);
@@ -23,7 +23,7 @@ export default function ResumeUpload() {
 
   return (
     <div className={`resume-upload ${isOpen ? "open" : "closed"}`}>
-      <button onClick={() => setIsOpen(!isOpen)} className="upload-button">
+      <button onClick={() => setIsOpen(!isOpen)} className="upload-drop">
         Resume Upload
         {isOpen ? <ChevronUp size={24} /> : <ChevronDown size={24} />}
       </button>
