@@ -1,4 +1,4 @@
-import "./dashboard.css"; // Import the new CSS file
+import "./dashboard.css"; 
 import NavBar from "./nav-bar.jsx";
 import ResumeUpload from "./resume-upload.jsx";
 import ContentBlock from "./content-block.jsx";
