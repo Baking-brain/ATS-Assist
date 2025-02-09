@@ -20,7 +20,7 @@ from api import views
 
 urlpatterns = [
     path('admin/', admin.site.urls),
-    path('', views.test_view.as_view()),
+    # path('', views.test_view.as_view()),
 
     #Applicants
     path('api/get_applicants', views.get_applicants.as_view()),
@@ -33,6 +33,10 @@ urlpatterns = [
 
     #Refresh Token
     path('api/refresh_token', views.refresh_token.as_view()),
+
+    #React
+    path('', views.serve_react.as_view()),
+    path('dashboard', views.serve_react.as_view()),
 
     
 ]
