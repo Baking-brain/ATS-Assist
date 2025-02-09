@@ -15,10 +15,10 @@
 }
 
 .navbar-search {
-    height: 40px;
+    height: 35px;
     width: 256px;
     background-color: #F5F5DC;
-    border-radius: 8px;
+    border-radius: 4px;
 }
 
 .navbar-profile {
