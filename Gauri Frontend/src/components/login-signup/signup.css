@@ -1,4 +1,3 @@
-
 /* Reset default styles */
 * {
     margin: 0;
@@ -15,6 +14,7 @@ html {
     justify-content: center;
     align-items: center;
     background: #f8f9fa;
+    /* Light gray background */
 }
 
 /* Center the form box */
@@ -29,18 +29,23 @@ html {
 /* Form box styling */
 .form-box {
     background: #dfdddd;
-    padding: 20px;
+    padding: 40px;
     border-radius: 12px;
     box-shadow: 0px 4px 10px rgba(0, 0, 0, 0.1);
     text-align: center;
     width: 400px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
 }
 
-/* Form heading */
+/* Form heading - centered properly */
 .form-box h1 {
     font-size: 28px;
     color: #3c00a0;
     margin-bottom: 20px;
+    text-align: center;
+    width: 100%;
 }
 
 /* Input group */
@@ -49,6 +54,8 @@ html {
     flex-direction: column;
     gap: 15px;
     margin-bottom: 20px;
+    width: 100%;
+    align-items: center;
 }
 
 /* Input field styles */
@@ -59,6 +66,7 @@ html {
     align-items: center;
     padding: 12px;
     border: 1px solid #ccc;
+    width: 100%;
 }
 
 .input-field input {
@@ -67,8 +75,8 @@ html {
     background: transparent;
     outline: none;
     font-size: 16px;
-    color: white;
     padding: 5px;
+    color: white;
 }
 
 .input-field i {
@@ -80,10 +88,12 @@ html {
 .btn-field {
     display: flex;
     justify-content: center;
+    gap: 10px;
+    width: 100%;
 }
 
 .btn-field button {
-    width: 100%;
+    flex: 1;
     background: #3c00a0;
     color: white;
     border: none;
@@ -94,6 +104,12 @@ html {
     transition: 0.3s;
 }
 
-.btn-field button:hover {
+/* Disabled button styling */
+.btn-field button.disable {
+    background: #eaeaea;
+    color: #555;
+}
+
+.btn-field button:not(.disable):hover {
     background: #2a0070;
 }
