@@ -1,4 +1,4 @@
-import math as math
+import math
 
 def cos_sim(vec1, vec2):
 
