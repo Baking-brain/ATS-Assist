@@ -12,12 +12,11 @@ jobs = [
     job1,
     job2,
     job3,
-    job4
+    job4,
 ]
 
-sim_scores = (get_tf_idf(all_skills=skills, jobs=jobs, user_skills=user_skills))
-print(sim_scores)
+similarity_scores = (get_tf_idf(all_skills=skills, jobs=jobs, user_skills=user_skills))
+print(similarity_scores)
 
-for score in sorted(list(sim_scores.values()))[::-1]:
-    temp = list(sim_scores.keys())[list(sim_scores.values()).index(score)]
-    print(temp)
+sorted_jobs = dict(sorted(similarity_scores.items(), key=lambda item: item[1], reverse=True))
+print(sorted_jobs)
