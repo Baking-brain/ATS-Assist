@@ -4,6 +4,7 @@ from rest_framework.response import Response
 from rest_framework import status, exceptions
 from .serializers import ApplicantSerializer
 from rest_framework_simplejwt.tokens import RefreshToken, AccessToken
+from rest_framework_simplejwt.exceptions import InvalidToken
 from .authentication import custom_jwtauthentication
 from rest_framework.permissions import IsAuthenticated
 from .models import Applicant
@@ -59,7 +60,7 @@ class login(APIView):
             user = Applicant.objects.get(username=username)
 
             check_password = user.check_password(password)
-            if user and check_password:
+            if check_password:
                 token = RefreshToken.for_user(user)
                 response = Response({"access_token":str(token.access_token), "refresh_token":str(token)})
 
@@ -69,7 +70,7 @@ class login(APIView):
                 return response
             
             else:
-                return Response({"status":"wrong password or user"})
+                return Response({"status":"missing password or username"}, status=status.HTTP_401_UNAUTHORIZED)
 
     
         except Exception as e:
@@ -79,23 +80,31 @@ class login(APIView):
 
 class refresh_token(APIView):
     
-    authentication_classes = [custom_jwtauthentication]
-    permission_classes = [IsAuthenticated]
+    authentication_classes = []
+    permission_classes = []
 
     def get(self, request):
 
         try:
-            new_token = RefreshToken(request.COOKIES.get('refresh_token'))
+            old_refresh_token = request.COOKIES.get('refresh_token')
+            if not old_refresh_token:
+                raise InvalidToken()
+
+
+            new_token = RefreshToken(old_refresh_token)
             
-            response = Response({"access_token":str(new_token.access_token), "refresh_token":str(new_token)})
+            response = Response({"new access_token":str(new_token.access_token), "refresh_token":str(new_token)})
             response.set_cookie("access_token", new_token.access_token)
             response.set_cookie("refresh_token", new_token)
 
             return response
 
         except Exception as e:
-            print(f'\n\nError => {e}\n\n')
-            return Response({"status":"Refresh token expired"})
+            if 'expired' in str(e):
+                raise InvalidToken('Refresh token expired')
+            else:
+                print(f'\n\nError => {e}\n\n')
+                return Response({"status":"Something went wrong refresh token"})
 
 class logout(APIView):
     
@@ -125,6 +134,12 @@ class get_profile(APIView):
 
         return Response({"Profile":applicant})
 
+class serve_react(APIView):
+    
+    authentication_classes = []
+    permission_classes = []
 
-
+    def get(self, request):
+        return render(request, 'index.html')
+    
 
