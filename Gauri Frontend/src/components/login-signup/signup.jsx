@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import axios from "axios";
 import "./signup.css"; // Ensure correct path for styles
@@ -8,6 +8,8 @@ const SignupLogin = () => {
   const [username, setUsername] = useState("");
   const [password, setPassword] = useState("");
   const [cnfpassword, setCnfPassword] = useState("");
+  const [errorMsg, setErrorMsg] = useState("");
+  const [isValidPassword, setIsValidPassword] = useState(false);
   const navigate = useNavigate();
 
   const toggleForm = () => {
@@ -53,6 +55,47 @@ const SignupLogin = () => {
       });
   }
 
+  function validatePassword() {
+    if (!password) {
+      setErrorMsg("");
+      setIsValidPassword(false);
+      return;
+    }
+
+    if (password.length < 8) {
+      setErrorMsg("Password must have 8 characters");
+      setIsValidPassword(false);
+      return;
+    }
+
+    const regx = /([!-/]|[:-@])/;
+    const regx2 = /[\d]/;
+    if (!regx.test(password)) {
+      setErrorMsg("Password must have special characters");
+      setIsValidPassword(false);
+      return;
+    }
+    if (!regx2.test(password)) {
+      setErrorMsg("Password must have numeric characters");
+      setIsValidPassword(false);
+      return;
+    }
+    if (password !== cnfpassword) {
+      setErrorMsg("Password do not match");
+      setIsValidPassword(false);
+      return;
+    }
+    setErrorMsg("");
+    setIsValidPassword(true);
+
+    setErrorMsg("");
+    setIsValidPassword(true);
+  }
+
+  useEffect(() => {
+    validatePassword();
+  }, [password, cnfpassword]);
+
   return (
     <div className="container">
       <div className="form-box">
@@ -95,6 +138,7 @@ const SignupLogin = () => {
                 value={password}
                 onChange={(e) => {
                   setPassword(e.target.value);
+                  // validatePassword();
                 }}
               />
             </div>
@@ -108,10 +152,13 @@ const SignupLogin = () => {
                   value={cnfpassword}
                   onChange={(e) => {
                     setCnfPassword(e.target.value);
+                    // validatePassword();
                   }}
                 />
               </div>
             )}
+
+            {isSignup && <div className="error-msg">{errorMsg}</div>}
           </div>
           <div className="btn-field">
             {isSignup ? (
@@ -119,9 +166,13 @@ const SignupLogin = () => {
                 type="button"
                 onClick={handleSignup}
                 className={
-                  !(username && password && cnfpassword) ? "disable" : ""
+                  !(username && password && cnfpassword && isValidPassword)
+                    ? "disable"
+                    : ""
                 }
-                disabled={!(username && password && cnfpassword)}
+                disabled={
+                  !(username && password && cnfpassword && isValidPassword)
+                }
               >
                 Sign Up
               </button>

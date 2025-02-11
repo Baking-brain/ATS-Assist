@@ -58,6 +58,11 @@ html {
   align-items: center;
 }
 
+.input-group .error-msg {
+  color: red;
+  font-size: 0.8rem;
+}
+
 /* Input field styles */
 .input-field {
   background: #141111;
