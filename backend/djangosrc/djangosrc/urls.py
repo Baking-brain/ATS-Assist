@@ -26,6 +26,8 @@ urlpatterns = [
     path('api/get_applicants', views.get_applicants.as_view()),
     path('api/create_applicant', views.create_applicant.as_view()),
     path('api/get_profile', views.get_profile.as_view()),
+    path('api/add_skills', views.add_skills.as_view()),
+    path('api/get_similar_applicants', views.get_similar_applicants.as_view()),
 
     #Log in-out
     path('api/login', views.login.as_view()),
