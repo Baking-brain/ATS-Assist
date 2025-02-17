@@ -8,7 +8,7 @@ import { useNavigate } from "react-router-dom";
 import getRefreshToken from "../refresh_token.jsx";
 
 export default function Dashboard() {
-  const [profile, setProfile] = useState({});
+  const [profile, setProfile] = useState({ username: "Default Username" });
   const navigate = useNavigate();
 
   useEffect(() => {

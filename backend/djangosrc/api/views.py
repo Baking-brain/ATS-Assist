@@ -234,7 +234,7 @@ class get_similar_applicants(APIView):
                                  )
                           )
 
-        return Response({"Applicants":applicants, "All skills":all_skill_ids})
+        return Response({"Applicants":applicants})
 
 class get_skills_applicant(APIView):
 

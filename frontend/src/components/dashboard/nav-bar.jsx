@@ -14,7 +14,9 @@ export default function NavBar({ username = "default username" }) {
         console.log(response.data);
         navigate("/");
       })
-      .catch((error) => {});
+      .catch((error) => {
+        console.log("Error => ", error);
+      });
   }
 
   return (
