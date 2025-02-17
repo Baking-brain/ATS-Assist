@@ -2,12 +2,12 @@ from django.shortcuts import render
 from rest_framework.views import APIView
 from rest_framework.response import Response
 from rest_framework import status, exceptions
-from .serializers import ApplicantSerializer, SkillSerializer, GetApplicantSkillsSerializer, GetApplicantProfileSerializer
+from .serializers import ApplicantSerializer, SkillSerializer, GetApplicantSkillsSerializer, GetApplicantProfileSerializer, JobSerializer
 from rest_framework_simplejwt.tokens import RefreshToken, AccessToken
 from rest_framework_simplejwt.exceptions import InvalidToken
 from .authentication import custom_jwtauthentication
 from rest_framework.permissions import IsAuthenticated
-from .models import Applicant, Skill
+from .models import Applicant, Skill, Job
 from .recommendation.cosine_similarity import cos_sim
 
 # Create your views here.
@@ -164,6 +164,7 @@ class add_skills(APIView):
 
         applicant = Applicant.objects.get(username=username)
 
+        #Get all skill names
         temp_all_skills = SkillSerializer(Skill.objects.all(), many=True).data
         all_skills = []
         for temp_skill in temp_all_skills:
@@ -241,6 +242,79 @@ class get_similar_applicants(APIView):
             similar_profiles.append(temp_profile)
 
         return Response({"Applicants":similar_profiles, "Scores":applicants})
+
+class add_jobs(APIView):
+    authentication_classes = []
+    permission_classes = []
+
+    def get(self, request):
+        jobs = JobSerializer(Job.objects.all(), many=True).data
+
+        return Response({"Jobs":jobs})
+    
+    """
+    {
+    "name":"Job1",
+    "requirements":["JavaScript", "HTML", "CSS", "Python"]
+    }
+    """
+
+    def post(self, request):
+        job_requirements = request.data['req']
+
+        all_skills = SkillSerializer(Skill.objects.all(), many=True).data
+        all_skills = [skill['name'] for skill in all_skills]
+
+
+        #Format all requirements and check if the skill exists
+        job_requirements = [[job2.lower().strip() for job2 in job1] for job1 in job_requirements]
+
+        job_req_id = []
+        for ind_job in job_requirements:
+            temp_job_id = []
+            for job_req in ind_job:
+                if job_req not in all_skills:
+                    print("\nNot Found\n")
+                else:
+                    skill = Skill.objects.get(name=job_req)
+                    temp_job_id.append(skill.id)
+            job_req_id.append(temp_job_id)
+        
+
+        jobs = Job.objects.all()
+        for job, reqs in zip(jobs, job_req_id):
+            print(job, reqs)
+            # job.requirements.add(*reqs)
+
+        print(job_req_id)
+
+
+    
+        return Response({"Jobs Req":job_requirements})
+
+class get_similar_jobs(APIView):
+    authentication_classes = []
+    permission_classes = []
+
+    def get(self, request):
+
+        username = request.user
+        jobs = JobSerializer(Job.objects.all(), many=True).data
+
+
+
+        return Response({"Jobs": jobs})
+
+
+
+
+
+
+
+
+
+
+
 
 class get_skills_applicant(APIView):
 
