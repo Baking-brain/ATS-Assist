@@ -2,7 +2,7 @@ from django.shortcuts import render
 from rest_framework.views import APIView
 from rest_framework.response import Response
 from rest_framework import status, exceptions
-from .serializers import ApplicantSerializer, SkillSerializer, GetApplicantSkillsSerializer
+from .serializers import ApplicantSerializer, SkillSerializer, GetApplicantSkillsSerializer, GetApplicantProfileSerializer
 from rest_framework_simplejwt.tokens import RefreshToken, AccessToken
 from rest_framework_simplejwt.exceptions import InvalidToken
 from .authentication import custom_jwtauthentication
@@ -233,8 +233,14 @@ class get_similar_applicants(APIView):
                                 key=lambda item: item[1], reverse=True
                                  )
                           )
+        
+        #Get similar applicants profile
+        similar_profiles = []
+        for applicant, score in applicants.items():
+            temp_profile = GetApplicantProfileSerializer(Applicant.objects.get(username=applicant)).data
+            similar_profiles.append(temp_profile)
 
-        return Response({"Applicants":applicants})
+        return Response({"Applicants":similar_profiles, "Scores":applicants})
 
 class get_skills_applicant(APIView):
 

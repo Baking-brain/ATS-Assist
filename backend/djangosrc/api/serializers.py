@@ -8,6 +8,13 @@ class ApplicantSerializer(serializers.ModelSerializer):
 
 
 
+class GetApplicantProfileSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Applicant
+        fields = ['id','username','skills']
+
+
+
 class GetApplicantSkillsSerializer(serializers.ModelSerializer):
     class Meta:
         model = Applicant
