@@ -8,7 +8,7 @@ def get_tf_idf(all_skills, user_skills, jobs):
     user_tf_score = {}
     for skill in all_skills:
         if skill in user_skills:
-            user_tf_score[skill] = round(1/len(user_skills), 3)
+            user_tf_score[skill] = round(1/(len(user_skills)+1), 3)
         else:
             user_tf_score[skill] = 0
 
@@ -19,7 +19,7 @@ def get_tf_idf(all_skills, user_skills, jobs):
         temp_job_tf_score = {}
         for skill in all_skills:
             if skill in job:
-                temp_job_tf_score[skill] = round(1/len(job), 3)
+                temp_job_tf_score[skill] = round(1/(len(job)+1), 3)
             else:
                 temp_job_tf_score[skill] = 0
         jobs_tf_score.append(temp_job_tf_score)
@@ -63,6 +63,3 @@ def get_tf_idf(all_skills, user_skills, jobs):
 
 
     return cos_sim_scores
-
-
-print("Hello World")

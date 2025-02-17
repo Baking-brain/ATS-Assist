@@ -236,6 +236,22 @@ class get_similar_applicants(APIView):
 
         return Response({"Applicants":applicants, "All skills":all_skill_ids})
 
+class get_skills_applicant(APIView):
+
+    authentication_classes = []
+    permission_classes = []
+
+    def get(self, request):
+
+        skill = Skill.objects.get(name='html')
+        skill_applicants = skill.applicants.all()
+        applicants = []
+        for applicant in skill_applicants:
+            applicants.append(applicant.username)
+            
+
+        return Response({"Java":applicants})
+
 """
 {
 "username":"test1",

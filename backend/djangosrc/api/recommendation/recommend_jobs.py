@@ -5,7 +5,7 @@ skills = ["html", "css", "javascript", "java", "c", "cpp", "python"]
 user_skills = ["javascript", "java", "c", "cpp"]
 
 job1 = ["css", "javascript", "cpp", "html"]
-job2 = ["java", "python", "css"]
+job2 = ["java", "cpp", "css"]
 job3 = ["java", "css", "python"]
 job4 = ["javascript", "c"]
 jobs = [
