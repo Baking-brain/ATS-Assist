@@ -18,11 +18,20 @@ export default function NavBar({ username = "default username" }) {
         console.log("Error => ", error);
       });
   }
-
   return (
     <nav className="navbar">
       <div className="navbar-logo"></div>
-      <div className="navbar-search"></div>
+      <div>
+        <input className="navbar-search" />
+        <button
+          onClick={() => {
+            navigate("/search");
+          }}
+        >
+          Search
+        </button>
+      </div>
+      {/* <div className="navbar-search"></div> */}
       <div className="navbar-profile">
         <button
           onClick={() => setIsOpen(!isOpen)}

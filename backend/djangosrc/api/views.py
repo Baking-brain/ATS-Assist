@@ -305,7 +305,88 @@ class get_similar_jobs(APIView):
 
         return Response({"Jobs": jobs})
 
+class get_search_results(APIView):
+    authentication_classes = []
+    permission_classes = []
 
+    def get(self, request):
+
+        #Get parameters from query
+        search_type = request.GET.get('search_type', None)
+        search_string = request.GET.get('search_string', None)
+        search_string = search_string.strip().lower()
+
+        #Check if search type is provided
+        if not search_type:
+            raise SyntaxError("Search type not provided")
+        
+        #Check if search string is provided
+        if not search_string:
+            return Response([])
+
+        #Return search query results for applicants
+        if search_type == 'applicant':
+
+            applicants = []
+            matching_skills = Skill.objects.filter(name__icontains=search_string)
+            for skill in matching_skills:
+                temp_applicants = ApplicantSerializer(skill.applicants.all(), many=True).data
+                for temp_applicant in temp_applicants:
+
+                    temp_skills_index = temp_applicant['skills']
+                    temp_skills = []
+                    for skill_index in temp_skills_index:
+                        temp_skill_name = Skill.objects.get(id=skill_index).name
+                        temp_skills.append(temp_skill_name)
+
+                    temp_applicant = {'username': temp_applicant['username'],'skills':temp_skills}
+                    applicants.append(temp_applicant)
+
+
+
+            #Filter applicants to remove duplicates
+            seen_applicants = set()
+            filtered_applicants = []
+            for applicant in applicants:
+                if applicant['username'] not in seen_applicants:
+                    filtered_applicants.append(applicant)
+                    seen_applicants.add(applicant['username'])
+
+            return Response(filtered_applicants)
+        
+
+        #Return search query results for jobs
+        elif search_type == 'job' :
+
+            jobs = []
+            matching_skills = Skill.objects.filter(name__icontains=search_string)
+            for skill in matching_skills:
+                temp_jobs = JobSerializer(skill.jobs.all(), many=True).data
+                for temp_job in temp_jobs:
+
+                    temp_skills_index = temp_job['requirements']
+                    temp_skills = []
+                    for skill_index in temp_skills_index:
+                        temp_skill_name = Skill.objects.get(id=skill_index).name
+                        temp_skills.append(temp_skill_name)
+
+                    temp_job = {'username': temp_job['name'],'skills':temp_skills}
+                    jobs.append(temp_job)
+
+
+
+            #Filter applicants to remove duplicates
+            seen_jobs = set()
+            filtered_jobs = []
+            for job in jobs:
+                if job['username'] not in seen_jobs:
+                    filtered_jobs.append(job)
+                    seen_jobs.add(job['username'])
+
+            return Response(filtered_jobs)
+            
+
+        raise SyntaxError("Invalid type provided")
 
 
 

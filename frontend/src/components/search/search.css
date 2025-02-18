@@ -1,0 +1,121 @@
+/* Styling for the search container */
+#search-con {
+  background-color: rgb(255, 255, 255);
+  height: 100vh;
+  width: 100vw;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  padding: 16px;
+  box-sizing: border-box;
+}
+
+/* Search bar styling */
+#search-con .navbar-search {
+  width: 80%;
+  max-width: 600px;
+  padding: 10px;
+  margin-bottom: 32px;
+  border: 2px solid #ccc;
+  border-radius: 8px;
+  font-size: 1rem;
+  outline: none;
+  transition: border-color 0.3s;
+}
+
+#search-con .navbar-search:focus {
+  border-color: #ffa500;
+}
+
+/* Radio button group styling */
+#search-con .radio-buttons {
+  margin-bottom: 32px; /* Space below the radio buttons */
+  display: flex;
+  justify-content: center; /* Center the radio buttons horizontally */
+  gap: 20px; /* Space between the radio button labels */
+  font-size: 1.2rem;
+}
+
+/* Style for each radio button label */
+#search-con .radio-buttons label {
+  display: flex;
+  align-items: center;
+  cursor: pointer;
+  font-size: 1.4rem;
+  color: #333;
+  transition: color 0.3s ease; /* Smooth color transition on hover */
+}
+
+/* Hover effect for the radio button label */
+#search-con .radio-buttons label:hover {
+  color: #ffa500; /* Change color on hover to match the theme */
+}
+
+/* Custom styling for radio button */
+#search-con .radio-buttons input[type="radio"] {
+  width: 18px; /* Adjust the size of the radio button */
+  height: 18px;
+  margin-right: 8px; /* Space between radio button and label text */
+  accent-color: #ffa500; /* Custom accent color for the radio button */
+  transition: transform 0.2s ease; /* Smooth transition effect */
+}
+
+/* Add a hover effect on the radio button */
+#search-con .radio-buttons input[type="radio"]:hover {
+  transform: scale(
+    1.2
+  ); /* Slightly increase the size of the radio button on hover */
+}
+
+/* Focus effect for radio button */
+#search-con .radio-buttons input[type="radio"]:focus {
+  outline: none;
+  box-shadow: 0 0 5px rgba(255, 165, 0, 0.6); /* Glow effect on focus */
+}
+
+/* Profile card container */
+#search-con #item-con {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 24px;
+  justify-content: center;
+  font-size: 1.2rem;
+}
+
+/* Profile card styling */
+#search-con .item {
+  background-color: rgb(212, 183, 131);
+  padding: 16px;
+  border-radius: 16px;
+  border: 3px solid rgb(163, 122, 39);
+  width: 250px;
+  height: fit-content;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  box-shadow: 0px 4px 6px rgba(0, 0, 0, 0.1);
+  transition: transform 0.2s ease-in-out;
+}
+
+#search-con .item:hover {
+  transform: translateY(-10px);
+}
+
+#search-con .item h1 {
+  font-size: 1.6rem;
+  color: #2f2f2f;
+  margin: 8px 0;
+}
+
+#search-con .skill {
+  list-style-type: none;
+  padding: 0;
+  margin: 0;
+}
+
+#search-con .skill li {
+  font-size: 1.2rem;
+  color: #555;
+  margin: 4px 0;
+}
