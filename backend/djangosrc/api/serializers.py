@@ -1,5 +1,5 @@
 from rest_framework import serializers
-from .models import Applicant, Skill
+from .models import Applicant, Skill, Job
 
 class ApplicantSerializer(serializers.ModelSerializer):
     class Meta:
@@ -8,10 +8,24 @@ class ApplicantSerializer(serializers.ModelSerializer):
 
 
 
+class GetApplicantProfileSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Applicant
+        fields = ['id','username','skills']
+
+
+
 class GetApplicantSkillsSerializer(serializers.ModelSerializer):
     class Meta:
         model = Applicant
         fields = ['username', 'skills']
+
+
+
+class JobSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Job
+        fields = "__all__"
 
 
 

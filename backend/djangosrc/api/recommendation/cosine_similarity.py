@@ -14,6 +14,6 @@ def cos_sim(vec1, vec2):
 
     return round(cosx, 5)
 
-test1 = [0, 1, 0, 1]
-test2 = [1, 1, 0, 1]
-print(cos_sim(test1, test2))
+# test1 = [0, 1, 0, 1]
+# test2 = [1, 1, 0, 1]
+# print(cos_sim(test1, test2))

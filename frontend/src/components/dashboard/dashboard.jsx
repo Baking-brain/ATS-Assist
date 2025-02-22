@@ -6,9 +6,10 @@ import { useEffect, useState } from "react";
 import axios from "axios";
 import { useNavigate } from "react-router-dom";
 import getRefreshToken from "../refresh_token.jsx";
+const isDevelopment = import.meta.env.VITE_IS_DEVELOPMENT === "true";
 
 export default function Dashboard() {
-  const [profile, setProfile] = useState({});
+  const [profile, setProfile] = useState({ username: "Default Username" });
   const navigate = useNavigate();
 
   useEffect(() => {
@@ -44,12 +45,10 @@ export default function Dashboard() {
         });
     }
 
-    get_profile();
+    if (!isDevelopment) {
+      get_profile();
+    }
   }, []);
-
-  // if (!profile.username) {
-  //   return <h1>Loading...</h1>;
-  // }
 
   return (
     <div className="dashboard">
