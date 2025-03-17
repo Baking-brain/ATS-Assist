@@ -74,8 +74,8 @@ REST_FRAMEWORK = {
 
 # Optional JWT settings to control token expiration and behavior
 SIMPLE_JWT = {
-    'ACCESS_TOKEN_LIFETIME': timedelta(minutes=5),  # Expiration time for the access token
-    'REFRESH_TOKEN_LIFETIME': timedelta(minutes=10),     # Expiration time for the refresh token
+    'ACCESS_TOKEN_LIFETIME': timedelta(seconds=600),  # Expiration time for the access token
+    'REFRESH_TOKEN_LIFETIME': timedelta(seconds=3600),     # Expiration time for the refresh token
     'ROTATE_REFRESH_TOKENS': True,  # Use refresh tokens to rotate the access token
     'BLACKLIST_AFTER_ROTATION': True,  # Blacklist old refresh tokens after they are rotated
 }
@@ -85,7 +85,7 @@ ROOT_URLCONF = 'djangosrc.urls'
 TEMPLATES = [
     {
         'BACKEND': 'django.template.backends.django.DjangoTemplates',
-        'DIRS': [],
+        'DIRS': ["templates/dist"],
         'APP_DIRS': True,
         'OPTIONS': {
             'context_processors': [
@@ -145,7 +145,12 @@ USE_TZ = True
 # Static files (CSS, JavaScript, Images)
 # https://docs.djangoproject.com/en/5.1/howto/static-files/
 
-STATIC_URL = 'static/'
+STATIC_URL = 'assets/'
+
+STATICFILES_DIRS = [
+    'templates/dist/assets'
+]
+
 
 # Default primary key field type
 # https://docs.djangoproject.com/en/5.1/ref/settings/#default-auto-field

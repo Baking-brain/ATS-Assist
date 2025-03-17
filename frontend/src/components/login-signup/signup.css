@@ -1,0 +1,121 @@
+/* Reset default styles */
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+  font-family: "Poppins", sans-serif;
+}
+
+/* Center the entire page */
+body,
+html {
+  height: 100vh;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  background: #f8f9fa;
+  /* Light gray background */
+}
+
+/* Center the form box */
+.container {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  width: 100%;
+  height: 100%;
+}
+
+/* Form box styling */
+.form-box {
+  background: #dfdddd;
+  padding: 40px;
+  border-radius: 12px;
+  box-shadow: 0px 4px 10px rgba(0, 0, 0, 0.1);
+  text-align: center;
+  width: 400px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+/* Form heading - centered properly */
+.form-box h1 {
+  font-size: 28px;
+  color: #3c00a0;
+  margin-bottom: 20px;
+  text-align: center;
+  width: 100%;
+}
+
+/* Input group */
+.input-group {
+  display: flex;
+  flex-direction: column;
+  gap: 15px;
+  margin-bottom: 20px;
+  width: 100%;
+  align-items: center;
+}
+
+.input-group .error-msg {
+  color: red;
+  font-size: 0.8rem;
+}
+
+/* Input field styles */
+.input-field {
+  background: #141111;
+  border-radius: 6px;
+  display: flex;
+  align-items: center;
+  padding: 12px;
+  border: 1px solid #ccc;
+  width: 100%;
+}
+
+.input-field input {
+  width: 100%;
+  border: none;
+  background: transparent;
+  outline: none;
+  font-size: 16px;
+  padding: 5px;
+  color: white;
+}
+
+.input-field i {
+  margin-left: 15px;
+  color: #999;
+}
+
+/* Button field */
+.btn-field {
+  display: flex;
+  justify-content: center;
+  gap: 10px;
+  width: 100%;
+  margin-bottom: 32px;
+}
+
+.btn-field button {
+  flex: 1;
+  background: #3c00a0;
+  color: white;
+  border: none;
+  padding: 12px;
+  border-radius: 15px;
+  cursor: pointer;
+  font-size: 16px;
+  transition: 0.3s;
+}
+
+/* Disabled button styling */
+.btn-field button.disable {
+  background: #eaeaea;
+  color: #555;
+}
+
+.btn-field button:not(.disable):hover {
+  background: #2a0070;
+}

@@ -1,0 +1,99 @@
+
+/* Reset default styles */
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+    font-family: "Poppins", sans-serif;
+}
+
+/* Center the entire page */
+body,
+html {
+    height: 100vh;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    background: #f8f9fa;
+}
+
+/* Center the form box */
+.container {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    width: 100%;
+    height: 100%;
+}
+
+/* Form box styling */
+.form-box {
+    background: #dfdddd;
+    padding: 20px;
+    border-radius: 12px;
+    box-shadow: 0px 4px 10px rgba(0, 0, 0, 0.1);
+    text-align: center;
+    width: 400px;
+}
+
+/* Form heading */
+.form-box h1 {
+    font-size: 28px;
+    color: #3c00a0;
+    margin-bottom: 20px;
+}
+
+/* Input group */
+.input-group {
+    display: flex;
+    flex-direction: column;
+    gap: 15px;
+    margin-bottom: 20px;
+}
+
+/* Input field styles */
+.input-field {
+    background: #141111;
+    border-radius: 6px;
+    display: flex;
+    align-items: center;
+    padding: 12px;
+    border: 1px solid #ccc;
+}
+
+.input-field input {
+    width: 100%;
+    border: none;
+    background: transparent;
+    outline: none;
+    font-size: 16px;
+    color: white;
+    padding: 5px;
+}
+
+.input-field i {
+    margin-left: 15px;
+    color: #999;
+}
+
+/* Button field */
+.btn-field {
+    display: flex;
+    justify-content: center;
+}
+
+.btn-field button {
+    width: 100%;
+    background: #3c00a0;
+    color: white;
+    border: none;
+    padding: 12px;
+    border-radius: 15px;
+    cursor: pointer;
+    font-size: 16px;
+    transition: 0.3s;
+}
+
+.btn-field button:hover {
+    background: #2a0070;
+}
