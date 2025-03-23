@@ -3,3 +3,6 @@ trials-for-dev/djangotutorial/venv
 venv
 
 resume_enhancer
+
+model/job_role_classifier.pth
+
