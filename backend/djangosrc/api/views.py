@@ -8,6 +8,7 @@ from rest_framework_simplejwt.exceptions import InvalidToken
 from .authentication import custom_jwtauthentication
 from rest_framework.permissions import IsAuthenticated
 from .models import Applicant, Skill, Job
+from django.db.models import Prefetch
 from .recommendation.cosine_similarity import cos_sim
 
 # Create your views here.
@@ -53,7 +54,7 @@ class login(APIView):
         password = request.data['password']
         print(username, password)
 
-        if not username or not password:
+        if (not username) or (not password):
             raise exceptions.ValidationError("Credentials not provided")
 
 
@@ -114,7 +115,7 @@ class logout(APIView):
 
     def get(self, request):
 
-        if not (request.COOKIES.get('access_token') and request.COOKIES.get('access_token')):
+        if (not request.COOKIES.get('access_token') or (not request.COOKIES.get('refresh_token'))):
             return Response({"status":"no token found"})
 
         response = Response({"status":"ok"})
@@ -237,7 +238,7 @@ class get_similar_applicants(APIView):
         
         #Get similar applicants profile
         similar_profiles = []
-        for applicant, score in applicants.items():
+        for applicant in applicants.keys():
             temp_profile = GetApplicantProfileSerializer(Applicant.objects.get(username=applicant)).data
             similar_profiles.append(temp_profile)
 
@@ -326,33 +327,31 @@ class get_search_results(APIView):
 
         #Return search query results for applicants
         if search_type == 'applicant':
-
-            applicants = []
+            # Filter skills by search string
             matching_skills = Skill.objects.filter(name__icontains=search_string)
-            for skill in matching_skills:
-                temp_applicants = ApplicantSerializer(skill.applicants.all(), many=True).data
-                for temp_applicant in temp_applicants:
+            
+            # Get applicants with skills that match the search
+            applicants = Applicant.objects.filter(skills__in=matching_skills).distinct()
 
-                    temp_skills_index = temp_applicant['skills']
-                    temp_skills = []
-                    for skill_index in temp_skills_index:
-                        temp_skill_name = Skill.objects.get(id=skill_index).name
-                        temp_skills.append(temp_skill_name)
+            # Prefetch skills associated with the applicants to avoid multiple queries
+            applicants = applicants.prefetch_related('skills')
 
-                    temp_applicant = {'username': temp_applicant['username'],'skills':temp_skills}
-                    applicants.append(temp_applicant)
-
-
-
-            #Filter applicants to remove duplicates
-            seen_applicants = set()
-            filtered_applicants = []
+            # Prepare the data for response
+            applicant_data = []
             for applicant in applicants:
-                if applicant['username'] not in seen_applicants:
-                    filtered_applicants.append(applicant)
-                    seen_applicants.add(applicant['username'])
+                # Extract skills associated with the applicant
+                temp_skills = [skill.name for skill in applicant.skills.all()]
+                print(applicant.skills.all())
 
-            return Response(filtered_applicants)
+                # Prepare the applicant info with skills
+                applicant_info = {
+                    'username': applicant.username,
+                    'skills': temp_skills
+                }
+                applicant_data.append(applicant_info)
+
+            # Return the unique list of applicants (distinct already handled by query)
+            return Response(applicant_data)
         
 
         #Return search query results for jobs

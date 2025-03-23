@@ -1,16 +1,17 @@
 import { BrowserRouter, Routes, Route } from "react-router-dom";
 import Dashboard from "./components/dashboard/dashboard.jsx";
-import Login from "./components/login-signup/login.jsx";
-import SignupLogin from "./components/login-signup/signup.jsx";
-import SearchPage from "./components/search/search.jsx";
+import SearchPage from "./components/search/SearchPage.jsx";
+import LoginPage from "./components/login-signup/LoginPage.jsx";
+import NavBar from "./components/dashboard/nav-bar.jsx";
 
 function App() {
   return (
     <div>
       {/* <Login /> */}
       <BrowserRouter>
+        <NavBar />
         <Routes>
-          <Route exact path="/" element={<SignupLogin />} />
+          <Route exact path="/" element={<LoginPage />} />
           <Route exact path="/dashboard" element={<Dashboard />} />
           <Route exact path="/search" element={<SearchPage />} />
         </Routes>
