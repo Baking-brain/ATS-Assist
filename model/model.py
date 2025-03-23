@@ -7,6 +7,13 @@ import numpy as np
 from sklearn.model_selection import train_test_split
 import os
 
+# How It Works in Inference (predict_keywords)
+# 	1.	The job role text (e.g., "Data Science") is tokenized using BertTokenizer.
+# 	2.	The tokenized input is passed to the trained BERT model.
+# 	3.	The model outputs logits, which are converted to probabilities using torch.sigmoid().
+# 	4.	A threshold (default 0.5) is applied to decide which keywords are predicted.
+# 	5.	The decoded keywords (original words) are returned.
+
 class KeywordDataset(Dataset):
     def __init__(self, texts, labels, tokenizer, max_length=128):
         self.encodings = tokenizer(texts, truncation=True, padding=True, max_length=max_length)
@@ -25,28 +32,28 @@ def train_keyword_model(data_path, num_epochs=5):
     df = pd.read_csv(data_path)
     
     print("Starting training with:")
-    print(f"Number of samples: {len(df)}")
-    print("First few rows:")
-    print(df.head())
+    print(f"Original samples: {len(df)}")
     
-    # Handle missing values and clean the Keywords column
-    df['Keywords'] = df['Keywords'].fillna('')  # Replace NaN with empty string
+    # Handle missing values more carefully
+    df['Keywords'] = df['Keywords'].fillna('unknown')  # Use 'unknown' instead of empty string
     
-    # Convert string keywords to list and clean them
+    # Convert string keywords to list and clean them, keeping more data
     df['Keywords'] = df['Keywords'].astype(str).apply(
-        lambda x: [k.strip() for k in x.split(',') if k.strip()]
+        lambda x: [k.strip() for k in x.split(',') if k.strip() and k.strip().lower() != 'unknown']
+        if ',' in x
+        else [x.strip()]  # If no comma, treat entire string as one keyword
     )
-    
-    # Remove rows with empty keyword lists
-    df = df[df['Keywords'].map(len) > 0]
     
     print(f"\nAfter cleaning, number of samples: {len(df)}")
     print("\nSample of processed keywords:")
     print(df['Keywords'].head())
+    print("\nUnique categories:", len(df['Category'].unique()))
+    print("Unique keywords:", len(set([k for kw_list in df['Keywords'] for k in kw_list])))
     
     # Create multi-label encoding
     mlb = MultiLabelBinarizer()
     keyword_encodings = mlb.fit_transform(df['Keywords'])
+    
     # Split data
     X_train, X_val, y_train, y_val = train_test_split(
         df['Category'].values, 
