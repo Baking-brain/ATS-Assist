@@ -1,15 +1,15 @@
-import React, { useState } from 'react';
-import './CreateProfile.css';
+import React, { useState } from "react";
+import "./CreateProfile.css";
 
-const CreateProfile = () => {
+export default function ProfilePage() {
   const [profileImage, setProfileImage] = useState(null);
   const [formData, setFormData] = useState({
-    name: '',
-    domain: '',
-    place: '',
-    bio: '',
-    email: '',
-    phone: ''
+    name: "",
+    domain: "",
+    place: "",
+    bio: "",
+    email: "",
+    phone: "",
   });
 
   const handleImageChange = (e) => {
@@ -27,35 +27,39 @@ const CreateProfile = () => {
     const { name, value } = e.target;
     setFormData({
       ...formData,
-      [name]: value
+      [name]: value,
     });
   };
 
   const handleSubmit = (e) => {
     e.preventDefault();
-    console.log('Form submitted:', formData);
-    console.log('Profile image:', profileImage);
-   
+    console.log("Form submitted:", formData);
+    console.log("Profile image:", profileImage);
   };
 
   return (
     <div className="create-profile-container">
       <h1>Create Your Profile</h1>
-      
+
       <form onSubmit={handleSubmit}>
         <div className="image-upload-container">
-          <div className="image-preview" style={{ backgroundImage: `url(${profileImage || '/default-avatar.png'})` }}>
+          <div
+            className="image-preview"
+            style={{
+              backgroundImage: `url(${profileImage || "/default-avatar.png"})`,
+            }}
+          >
             {!profileImage && <span>+</span>}
           </div>
-          <input 
-            type="file" 
-            id="profile-image" 
-            accept="image/*" 
-            onChange={handleImageChange} 
-            className="image-input" 
+          <input
+            type="file"
+            id="profile-image"
+            accept="image/*"
+            onChange={handleImageChange}
+            className="image-input"
           />
           <label htmlFor="profile-image" className="image-label">
-            {profileImage ? 'Change Photo' : 'Upload Photo'}
+            {profileImage ? "Change Photo" : "Upload Photo"}
           </label>
         </div>
 
@@ -135,10 +139,10 @@ const CreateProfile = () => {
           />
         </div>
 
-        <button type="submit" className="submit-button">Create Profile</button>
+        <button type="submit" className="submit-button">
+          Create Profile
+        </button>
       </form>
     </div>
   );
-};
-
-export default CreateProfile;
+}

@@ -27,38 +27,89 @@ export default function NavBar({ username = "default username" }) {
   //Get profile details upon login
   useEffect(() => {
     async function get_profile() {
-      await axios
-        .get("/api/get_profile")
-        .then((response) => {
-          console.log(response);
-          setProfile(response.data.Profile);
-        })
-        .catch((error) => {
-          const errMsg = error.response.data.detail;
-          console.log("Error: ", error, errMsg);
+      try {
+        const profileResponse = await axios.get("/api/get_profile");
+        console.log(profileResponse);
+        setProfile(profileResponse.data.Profile);
+      } catch (profileFetchError) {
+        const errMsg = profileFetchError.response.data.detail;
+        console.log("Profile fetch error: ", profileFetchError, errMsg);
 
-          //If cookies not set
-          if (errMsg.includes("not provided")) {
-            alert("Session expired, please login again");
-            navigate("/");
-            return;
-          }
+        //If cookies not set
+        if (errMsg.includes("not provided")) {
+          alert("Session not started, please login again");
+          navigate("/");
+          return;
+        }
 
-          //If access token expired
-          if (errMsg.includes("invalid or expired")) {
-            const refreshTokenMsg = getRefreshToken();
+        // console.log(
+        //   "Entering access token expired block. Boolean value: ",
+        //   errMsg.includes("invalid or expired")
+        // );
+
+        //If access token expired
+        if (errMsg.includes("invalid or expired")) {
+          // console.log("Making new access token request");
+
+          try {
+            const refreshTokenMsg = await getRefreshToken();
+          } catch (refreshError) {
+            console.log("Refresh error: ", refreshError);
 
             //If refresh token expired
-            if (refreshTokenMsg == "Refresh token expired") {
+            if (refreshError.message == "Refresh token expired") {
               alert("Session expired, please login again");
               navigate("/");
               return;
             }
           }
-        });
+        }
+      }
+      // await axios
+      //   .get("/api/get_profile")
+      //   .then((response) => {
+      //     console.log(response);
+      //     setProfile(response.data.Profile);
+      //   })
+      //   .catch((error) => {
+      //     const errMsg = error.response.data.detail;
+      //     console.log("Profile fetch error: ", error, errMsg);
+
+      //     //If cookies not set
+      //     if (errMsg.includes("not provided")) {
+      //       alert("Session not started, please login again");
+      //       navigate("/");
+      //       return;
+      //     }
+
+      //     console.log(
+      //       "Entering access token expired block. Boolean value: ",
+      //       errMsg.includes("invalid or expired")
+      //     );
+
+      //     //If access token expired
+      //     if (errMsg.includes("invalid or expired")) {
+      //       console.log("Making new access token request");
+
+      //       const refreshTokenMsg = getRefreshToken();
+
+      //       console.log(
+      //         "Refresh token expired. Boolean value: ",
+      //         refreshTokenMsg == "Refresh token expired",
+      //         refreshTokenMsg
+      //       );
+
+      //       //If refresh token expired
+      //       if (refreshTokenMsg == "Refresh token expired") {
+      //         alert("Session expired, please login again");
+      //         navigate("/");
+      //         return;
+      //       }
+      //     }
+      //   });
     }
 
-    if (!isDevelopment) {
+    if (!isDevelopment && location.pathname !== "/") {
       get_profile();
     }
   }, []);
@@ -97,36 +148,6 @@ export default function NavBar({ username = "default username" }) {
         {isOpen && (
           <div className="navbar-dropdown">
             <p>Edit Profile</p>
-            <p onClick={handleLogout}>Log Out</p>
-          </div>
-        )}
-      </div>
-    </nav>
-  );
-
-  return (
-    <nav className="navbar">
-      <div className="navbar-logo"></div>
-      <div>
-        <input className="navbar-search" />
-        <button
-          onClick={() => {
-            navigate("/search");
-          }}
-        >
-          Search
-        </button>
-      </div>
-      {/* <div className="navbar-search"></div> */}
-      <div className="navbar-profile">
-        <button
-          onClick={() => setIsOpen(!isOpen)}
-          className="navbar-profile-button"
-        />
-        {isOpen && (
-          <div className="navbar-dropdown">
-            <p>{username}</p>
-            <a href="#">Edit Profile</a>
             <p onClick={handleLogout}>Log Out</p>
           </div>
         )}

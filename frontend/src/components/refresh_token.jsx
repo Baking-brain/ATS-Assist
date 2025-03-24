@@ -8,8 +8,8 @@ export default async function getRefreshToken() {
       //   alert("New token assigned");
     })
     .catch((error) => {
-      console.log("Error: ", error);
-      alert(error.response.data.detail);
-      return error.response.data.detail;
+      console.log("Refresh token error: ", error);
+      // alert(error.response.data.detail);
+      throw new Error(error.response.data.detail);
     });
 }

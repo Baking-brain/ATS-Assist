@@ -2,6 +2,7 @@ import { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import "./LoginPage.css";
 import { Lock, User, User2 } from "lucide-react";
+import axios from "axios";
 
 export default function LoginSignup() {
   const [isLoginActive, setIsLoginActive] = useState(true);
@@ -20,14 +21,29 @@ export default function LoginSignup() {
     setErrorMessage("");
   };
 
-  const handleLogin = (e) => {
+  async function handleLogin(e) {
     e.preventDefault();
     setIsLoading(true);
-    setErrorMessage("");
 
     // Simulate login process
-    console.log("Login clicked");
-  };
+    await axios
+      .post("/api/login", {
+        username: loginUsername,
+        password: loginPassword,
+      })
+      .then((response) => {
+        console.log(response.data);
+        setIsLoading(false);
+        navigate("/dashboard");
+      })
+      .catch((error) => {
+        console.error(error.response.data);
+        setLoginUsername("");
+        setLoginPassword("");
+        setIsLoading(false);
+        setErrorMessage(error.response.data.status);
+      });
+  }
 
   const handleSignup = (e) => {
     e.preventDefault();

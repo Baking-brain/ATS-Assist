@@ -72,13 +72,16 @@ class login(APIView):
                 return response
             
             else:
-                return Response({"status":"missing password or username"}, status=status.HTTP_401_UNAUTHORIZED)
+                return Response({"status":"Incorrect Credentials"}, status=status.HTTP_401_UNAUTHORIZED)
 
     
         except Exception as e:
             print("\n\nGenerate Error: ",e)
             
-            return Response({"Status":"Something went wrong"}, status=status.HTTP_401_UNAUTHORIZED)
+            if "Applicant matching query does not exist" in str(e):
+                return Response({"status":"Incorrect credentials"}, status=status.HTTP_401_UNAUTHORIZED)
+            
+            return Response({"status":"Something went wrong"}, status=status.HTTP_401_UNAUTHORIZED)
 
 class refresh_token(APIView):
     
@@ -240,6 +243,13 @@ class get_similar_applicants(APIView):
         similar_profiles = []
         for applicant in applicants.keys():
             temp_profile = GetApplicantProfileSerializer(Applicant.objects.get(username=applicant)).data
+
+            #Convert skill ids into skill names
+            temp_skills = []
+            for skill_id in temp_profile['skills']:
+                skill = Skill.objects.get(id=skill_id)
+                temp_skills.append(skill.name)
+            temp_profile['skills'] = temp_skills
             similar_profiles.append(temp_profile)
 
         return Response({"Applicants":similar_profiles, "Scores":applicants})
@@ -326,7 +336,7 @@ class get_search_results(APIView):
             return Response([])
 
         #Return search query results for applicants
-        if search_type == 'applicant':
+        if search_type == 'applicants':
             # Filter skills by search string
             matching_skills = Skill.objects.filter(name__icontains=search_string)
             
@@ -344,10 +354,15 @@ class get_search_results(APIView):
                 print(applicant.skills.all())
 
                 # Prepare the applicant info with skills
-                applicant_info = {
-                    'username': applicant.username,
-                    'skills': temp_skills
-                }
+                applicant_info = GetApplicantProfileSerializer(applicant).data
+
+                #Convert skill ids into skill names
+                temp_skills = []
+                for skill_id in applicant_info['skills']:
+                    skill = Skill.objects.get(id=skill_id)
+                    temp_skills.append(skill.name)
+                applicant_info['skills'] = temp_skills
+
                 applicant_data.append(applicant_info)
 
             # Return the unique list of applicants (distinct already handled by query)
@@ -355,7 +370,7 @@ class get_search_results(APIView):
         
 
         #Return search query results for jobs
-        elif search_type == 'job' :
+        elif search_type == 'jobs' :
 
             jobs = []
             matching_skills = Skill.objects.filter(name__icontains=search_string)

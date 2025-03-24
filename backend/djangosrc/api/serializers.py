@@ -11,7 +11,7 @@ class ApplicantSerializer(serializers.ModelSerializer):
 class GetApplicantProfileSerializer(serializers.ModelSerializer):
     class Meta:
         model = Applicant
-        fields = ['id','username','skills']
+        fields = ['id','username','skills', 'name', 'experience', 'education']
 
 
 

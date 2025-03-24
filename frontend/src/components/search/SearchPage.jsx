@@ -8,6 +8,8 @@ import {
   IndianRupee,
   MapPin,
 } from "lucide-react";
+import getRefreshToken from "../refresh_token";
+import axios from "axios";
 const isDevelopment = import.meta.env.VITE_IS_DEVELOPMENT === "true";
 
 // Mock search results
@@ -70,13 +72,15 @@ const mockCandidates = [
   {
     id: 1,
     name: "Alex Johnson",
-    experience: "8 years",
-    education: "M.S. Computer Science",
-    skills: ["React", "Node.js", "TypeScript", "AWS", "Docker"],
+    username: "alexjohnson",
+    experience: 0.0,
+    education: "",
+    skills: [],
   },
   {
     id: 2,
     name: "Sarah Williams",
+    username: "sarahwilliams",
     experience: "5 years",
     education: "B.A. Graphic Design",
     skills: [
@@ -90,6 +94,7 @@ const mockCandidates = [
   {
     id: 3,
     name: "David Chen",
+    username: "davidchen",
     experience: "6 years",
     education: "B.S. Computer Engineering",
     skills: ["JavaScript", "React", "Python", "Django", "PostgreSQL"],
@@ -97,6 +102,7 @@ const mockCandidates = [
   {
     id: 4,
     name: "Priya Patel",
+    username: "priyapatel",
     experience: "4 years",
     education: "Ph.D. Statistics",
     skills: ["Python", "R", "Machine Learning", "SQL", "TensorFlow"],
@@ -105,29 +111,22 @@ const mockCandidates = [
 
 export default function SearchPage() {
   const [searchString, setSearchString] = useState("");
-  const [searchMode, setSearchMode] = useState("jobs");
+  const [searchType, setSearchType] = useState("jobs");
   const [isLoading, setIsLoading] = useState(false);
   const [displayData, setDisplayData] = useState([]);
   const navigate = useNavigate();
-
-  useEffect(() => {
-    // Set initial results based on the search mode
-    setDisplayData(searchMode === "jobs" ? mockJobs : mockCandidates);
-    setIsLoading(false);
-    setSearchString("");
-  }, [searchMode]);
 
   const handleSearch = () => {
     setIsLoading(true);
 
     // Simulate search delay
-    let results = searchMode === "jobs" ? mockJobs : mockCandidates;
+    let results = searchType === "jobs" ? mockJobs : mockCandidates;
 
     // Filter by search query if provided
     if (searchString.trim()) {
       const query = searchString.toLowerCase();
 
-      if (searchMode === "jobs") {
+      if (searchType === "jobs") {
         results = results.filter(
           (job) =>
             job.title.toLowerCase().includes(query) ||
@@ -172,12 +171,16 @@ export default function SearchPage() {
     return (
       <>
         <div className="results-header">
-          <h2>{displayData.length} Results</h2>
+          {!searchString && searchType === "applicants" ? (
+            <h2>Other applicants like you</h2>
+          ) : (
+            <h2>{displayData.length} Results</h2>
+          )}
         </div>
 
         <div className="results-container">
           {displayData.map((item) => {
-            if (searchMode === "jobs") {
+            if (searchType === "jobs") {
               return <JobCard key={item.id} job={item} />;
             } else {
               return <CandidateCard key={item.id} candidate={item} />;
@@ -189,7 +192,60 @@ export default function SearchPage() {
   };
 
   useEffect(() => {
-    async function getdisplayData() {
+    async function getSimilarApplicants() {
+      try {
+        const getSimilarApplicantsResponse = await axios.get(
+          "/api/get_similar_applicants"
+        );
+        // console.log(getSimilarApplicantsResponse);
+        setDisplayData(getSimilarApplicantsResponse.data.Applicants);
+      } catch (getSimilarApplicantsError) {
+        const errMsg = getSimilarApplicantsError.response.data.detail;
+        console.log(
+          "Profile fetch error: \n",
+          getSimilarApplicantsError,
+          errMsg
+        );
+
+        //If cookies not set
+        if (errMsg.includes("not provided")) {
+          alert("Session not started, please login again");
+          navigate("/");
+          return;
+        }
+
+        //If access token expired
+        if (errMsg.includes("invalid or expired")) {
+          try {
+            const refreshTokenMsg = await getRefreshToken();
+          } catch (refreshError) {
+            console.log("Refresh error: ", refreshError);
+
+            //If refresh token expired
+            if (refreshError.message == "Refresh token expired") {
+              alert("Session expired, please login again");
+              navigate("/");
+              return;
+            }
+          }
+        }
+      }
+    }
+
+    setSearchString("");
+    if (!isDevelopment) {
+      if (searchType === "applicants") {
+        getSimilarApplicants();
+        return;
+      }
+    }
+    // Set initial results based on the search mode
+    setDisplayData(searchType === "jobs" ? mockJobs : mockCandidates);
+    setIsLoading(false);
+  }, [searchType]);
+
+  useEffect(() => {
+    async function getSearchedData() {
       await axios
         .get("/api/get_search_results", {
           params: { search_string: searchString, search_type: searchType },
@@ -201,10 +257,19 @@ export default function SearchPage() {
           console.log("Error=> ", error);
         });
     }
+
+    //Check for development
     if (isDevelopment) {
       handleSearch();
     } else {
-      getdisplayData();
+      //Return if searching for jobs()not implemented yet
+      if (searchType === "jobs") {
+        return;
+      }
+    }
+
+    if (searchString.trim()) {
+      getSearchedData();
     }
   }, [searchString]);
 
@@ -213,23 +278,23 @@ export default function SearchPage() {
       <div className="container">
         <div className="search-tabs">
           <button
-            className={`tab ${searchMode === "jobs" ? "active" : ""}`}
-            onClick={() => setSearchMode("jobs")}
+            className={`tab ${searchType === "jobs" ? "active" : ""}`}
+            onClick={() => setSearchType("jobs")}
           >
             Search Jobs
           </button>
           <button
-            className={`tab ${searchMode === "candidates" ? "active" : ""}`}
-            onClick={() => setSearchMode("candidates")}
+            className={`tab ${searchType === "applicants" ? "active" : ""}`}
+            onClick={() => setSearchType("applicants")}
           >
-            Search Candidates
+            Search Applicants
           </button>
         </div>
 
         <div className="search-box">
           <p className="search-info">
             Search for{" "}
-            {searchMode === "jobs" ? "jobs by skills" : "candidates by skills"}
+            {searchType === "jobs" ? "jobs by skills" : "applicants by skills"}
           </p>
           <div className="search-input-container">
             <input
@@ -312,6 +377,7 @@ const CandidateCard = ({ candidate }) => {
       <div className="candidate-card-header">
         <div className="candidate-info">
           <h3 className="candidate-name">{candidate.name}</h3>
+          <p className="candidate-username">@{candidate.username}</p>
         </div>
       </div>
       <div className="candidate-card-content">
@@ -320,21 +386,23 @@ const CandidateCard = ({ candidate }) => {
             <span className="icon">
               <GraduationCap color="#7c3aed" />
             </span>
-            <span>{candidate.education}</span>
+            <span>{candidate.education || "Not Provided"}</span>
           </div>
           <div className="detail-item">
             <span className="icon">
               <Hourglass color="#7c3aed" />
             </span>
-            <span>{candidate.experience} experience</span>
+            <span>{candidate.experience} years experience</span>
           </div>
         </div>
         <div className="candidate-skills">
-          {candidate.skills.map((skill, index) => (
-            <span key={index} className="skill-tag">
-              {skill}
-            </span>
-          ))}
+          {candidate.skills.length
+            ? candidate.skills.map((skill, index) => (
+                <span key={index} className="skill-tag">
+                  {skill}
+                </span>
+              ))
+            : "Skills not provided"}
         </div>
       </div>
       <div className="candidate-card-footer">

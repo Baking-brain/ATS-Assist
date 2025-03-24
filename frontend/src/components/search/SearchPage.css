@@ -209,6 +209,15 @@
   margin-bottom: 8px;
 }
 
+#search .candidate-info {
+  margin-bottom: 8px;
+}
+
+#search .candidate-username {
+  text-decoration: underline;
+  font-size: 0.9rem;
+}
+
 #search .job-skills,
 #search .candidate-skills {
   font-size: 1rem;
