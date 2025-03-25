@@ -26,9 +26,9 @@ class Skill(models.Model):
 
 class Applicant(AbstractBaseUser):
     username = models.CharField(max_length=20, unique=True)
+    name = models.CharField(max_length=30, default=None)
     password = models.CharField(max_length=128)
     skills = models.ManyToManyField(Skill, related_name='applicants')
-    name = models.CharField(max_length=30, default=None)
     experience = models.FloatField(default=None)
     education = models.CharField(max_length=100, default=None)
 

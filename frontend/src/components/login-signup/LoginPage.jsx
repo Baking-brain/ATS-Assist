@@ -1,7 +1,7 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import "./LoginPage.css";
-import { Lock, User, User2 } from "lucide-react";
+import { Lock, User } from "lucide-react";
 import axios from "axios";
 
 export default function LoginSignup({ setProfile }) {
@@ -19,6 +19,12 @@ export default function LoginSignup({ setProfile }) {
   const toggleForm = () => {
     setIsLoginActive(!isLoginActive);
     setErrorMessage("");
+    setLoginUsername("");
+    setLoginPassword("");
+    setSignupName("");
+    setSignupUsername("");
+    setSignupPassword("");
+    setConfirmPassword("");
   };
 
   async function handleLogin(e) {
@@ -46,21 +52,81 @@ export default function LoginSignup({ setProfile }) {
       });
   }
 
-  const handleSignup = (e) => {
+  async function handleSignup(e) {
     e.preventDefault();
     setIsLoading(true);
     setErrorMessage("");
 
-    // Password validation
-    if (signupPassword !== confirmPassword) {
-      setErrorMessage("Passwords don't match");
+    // Simulate signup process
+    //Create payload
+    const signUpData = {
+      username: signupUsername,
+      name: signupName,
+      password: signupPassword,
+    };
+
+    //Make axios post request
+    try {
+      const signUpResponse = await axios.post(
+        "/api/create_applicant",
+        signUpData
+      );
+      console.log(signUpResponse.data);
       setIsLoading(false);
+      toggleForm();
+    } catch (error) {
+      console.error("Signup Error: ", error);
+      setIsLoading(false);
+    }
+  }
+
+  //Password parameter validation
+  useEffect(() => {
+    //Return if login is active
+    if (isLoginActive) {
       return;
     }
 
-    // Simulate signup process
-    console.log("Signup Clicked");
-  };
+    // Check the length
+    if (signupPassword.length < 8) {
+      setErrorMessage("Password must be at least 8 characters long.");
+      return;
+    }
+
+    // Check for at least one number
+    if (!/\d/.test(signupPassword)) {
+      setErrorMessage("Password must contain at least one number.");
+      return;
+    }
+
+    // Check for at least one special character
+    if (!/[!@#$%^&*(),.?":{}|<>]/.test(signupPassword)) {
+      setErrorMessage("Password must contain at least one special character.");
+      return;
+    }
+
+    // If all conditions are met
+    setErrorMessage("");
+    return;
+  }, [signupPassword]);
+
+  //Matching passwords while Signup
+  useEffect(() => {
+    //Return if login is active
+    if (isLoginActive) {
+      return;
+    }
+
+    // Check the length
+    if (signupPassword !== confirmPassword) {
+      setErrorMessage("Passwords do not match.");
+      return;
+    }
+
+    // If all conditions are met
+    setErrorMessage("");
+    return;
+  }, [confirmPassword]);
 
   return (
     <div className="auth-container">
@@ -73,13 +139,21 @@ export default function LoginSignup({ setProfile }) {
         <div className="auth-tabs">
           <button
             className={`auth-tab ${isLoginActive ? "active" : ""}`}
-            onClick={() => setIsLoginActive(true)}
+            onClick={() => {
+              if (!isLoginActive) {
+                toggleForm();
+              }
+            }}
           >
             Login
           </button>
           <button
             className={`auth-tab ${!isLoginActive ? "active" : ""}`}
-            onClick={() => setIsLoginActive(false)}
+            onClick={() => {
+              if (isLoginActive) {
+                toggleForm();
+              }
+            }}
           >
             Sign Up
           </button>
@@ -201,7 +275,11 @@ export default function LoginSignup({ setProfile }) {
               </div>
             </div>
 
-            <button type="submit" className="auth-button" disabled={isLoading}>
+            <button
+              type="submit"
+              className="auth-button"
+              disabled={isLoading || errorMessage.trim()}
+            >
               {isLoading ? (
                 <span className="loading-spinner"></span>
               ) : (
