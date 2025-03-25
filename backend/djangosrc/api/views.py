@@ -10,6 +10,7 @@ from rest_framework.permissions import IsAuthenticated
 from .models import Applicant, Skill, Job
 from django.db.models import Prefetch
 from .recommendation.cosine_similarity import cos_sim
+from .recommendation.recommend_jobs import recommend_similar_jobs
 
 # Create your views here.
 class test_view(APIView):
@@ -64,7 +65,7 @@ class login(APIView):
             check_password = user.check_password(password)
             if check_password:
                 token = RefreshToken.for_user(user)
-                response = Response({"access_token":str(token.access_token), "refresh_token":str(token)})
+                response = Response({"Profile":GetApplicantProfileSerializer(user).data})
 
                 response.set_cookie("access_token", str(token.access_token))
                 response.set_cookie("refresh_token", str(token))
@@ -304,17 +305,40 @@ class add_jobs(APIView):
         return Response({"Jobs Req":job_requirements})
 
 class get_similar_jobs(APIView):
-    authentication_classes = []
-    permission_classes = []
+    authentication_classes = [custom_jwtauthentication]
+    permission_classes = [IsAuthenticated]
 
     def get(self, request):
 
         username = request.user
-        jobs = JobSerializer(Job.objects.all(), many=True).data
+
+        #Get user skills names
+        user = Applicant.objects.get(username=username)
+        user_skills = [skill.name for skill in user.skills.all()]
+
+
+        #Get all skill names
+        all_skills = [skill.name for skill in Skill.objects.all()]
+
+        jobs = Job.objects.all()
+
+        all_jobs_requirements = []
+        for job in jobs:
+            job_req = [req.name for req in job.requirements.all()]
+            all_jobs_requirements.append(job_req)
+
+        generic_recommended_jobs = recommend_similar_jobs(all_skills=all_skills, user_skills=user_skills, all_jobs_requirements=all_jobs_requirements)
+
+        recommended_jobs = [] 
+        for job_name_index in generic_recommended_jobs.keys():
+            temp_job = jobs[int(job_name_index[-1]) - 1]
+            temp_job = JobSerializer(temp_job).data
+            temp_job['requirements'] = [Skill.objects.get(id=skill_id).name for skill_id in temp_job['requirements']]
+            recommended_jobs.append(temp_job)
 
 
 
-        return Response({"Jobs": jobs})
+        return Response({"Jobs":recommended_jobs})
 
 class get_search_results(APIView):
     authentication_classes = []

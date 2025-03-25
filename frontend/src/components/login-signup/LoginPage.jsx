@@ -4,7 +4,7 @@ import "./LoginPage.css";
 import { Lock, User, User2 } from "lucide-react";
 import axios from "axios";
 
-export default function LoginSignup() {
+export default function LoginSignup({ setProfile }) {
   const [isLoginActive, setIsLoginActive] = useState(true);
   const [loginUsername, setLoginUsername] = useState("");
   const [loginPassword, setLoginPassword] = useState("");
@@ -33,6 +33,7 @@ export default function LoginSignup() {
       })
       .then((response) => {
         console.log(response.data);
+        setProfile(response.data.Profile);
         setIsLoading(false);
         navigate("/dashboard");
       })

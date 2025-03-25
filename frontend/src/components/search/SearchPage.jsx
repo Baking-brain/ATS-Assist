@@ -19,52 +19,46 @@ const mockJobs = [
     title: "Senior Frontend Developer",
     company: "TechCorp Inc.",
     location: "San Francisco, CA",
-    type: "Full-time",
     salary: "$120,000 - $150,000",
     description:
       "We're looking for an experienced frontend developer with expertise in React, TypeScript and modern web technologies.",
-    posted: "2 days ago",
-    skills: ["React", "TypeScript", "JavaScript", "HTML", "CSS"],
-    featured: true,
+    requirements: ["React", "TypeScript", "JavaScript", "HTML", "CSS"],
   },
   {
     id: 2,
     title: "UX/UI Designer",
     company: "DesignHub",
     location: "Remote",
-    type: "Contract",
     salary: "$80,000 - $100,000",
     description:
       "Join our design team to create beautiful and intuitive user interfaces for our flagship product.",
-    posted: "1 week ago",
-    skills: ["Figma", "Adobe XD", "UI Design", "User Research", "Prototyping"],
-    featured: false,
+    requirements: [
+      "Figma",
+      "Adobe XD",
+      "UI Design",
+      "User Research",
+      "Prototyping",
+    ],
   },
   {
     id: 3,
     title: "DevOps Engineer",
     company: "CloudNine Solutions",
     location: "New York, NY",
-    type: "Full-time",
     salary: "$130,000 - $160,000",
     description:
       "Seeking a skilled DevOps engineer to optimize our cloud infrastructure and deployment processes.",
-    posted: "3 days ago",
-    skills: ["AWS", "Docker", "Kubernetes", "CI/CD", "Linux"],
-    featured: true,
+    requirements: ["AWS", "Docker", "Kubernetes", "CI/CD", "Linux"],
   },
   {
     id: 4,
     title: "Backend Developer",
     company: "DataStream Analytics",
     location: "Boston, MA",
-    type: "Full-time",
     salary: "$110,000 - $140,000",
     description:
       "Build scalable backend services for our growing data analytics platform.",
-    posted: "4 days ago",
-    skills: ["Python", "Node.js", "SQL", "MongoDB", "API Design"],
-    featured: false,
+    requirements: ["Python", "Node.js", "SQL", "MongoDB", "API Design"],
   },
 ];
 
@@ -75,7 +69,7 @@ const mockCandidates = [
     username: "alexjohnson",
     experience: 0.0,
     education: "",
-    skills: [],
+    skills: ["hello", "heelo2"],
   },
   {
     id: 2,
@@ -120,7 +114,8 @@ export default function SearchPage() {
     setIsLoading(true);
 
     // Simulate search delay
-    let results = searchType === "jobs" ? mockJobs : mockCandidates;
+    let results = displayData;
+    console.log("Results", results);
 
     // Filter by search query if provided
     if (searchString.trim()) {
@@ -131,7 +126,9 @@ export default function SearchPage() {
           (job) =>
             job.title.toLowerCase().includes(query) ||
             job.company.toLowerCase().includes(query) ||
-            job.skills.some((skill) => skill.toLowerCase().includes(query))
+            job.requirements.some((skill) =>
+              skill.toLowerCase().includes(query)
+            )
         );
       } else {
         results = results.filter(
@@ -142,12 +139,9 @@ export default function SearchPage() {
             )
         );
       }
+      console.log("Filtered results: ", results);
+      setDisplayData(results);
     }
-
-    console.log("Searching... ", results);
-
-    setDisplayData(results);
-    setIsLoading(false);
   };
 
   const renderdisplayData = () => {
@@ -191,57 +185,96 @@ export default function SearchPage() {
     );
   };
 
-  useEffect(() => {
-    async function getSimilarApplicants() {
-      try {
-        const getSimilarApplicantsResponse = await axios.get(
-          "/api/get_similar_applicants"
-        );
-        // console.log(getSimilarApplicantsResponse);
-        setDisplayData(getSimilarApplicantsResponse.data.Applicants);
-      } catch (getSimilarApplicantsError) {
-        const errMsg = getSimilarApplicantsError.response.data.detail;
-        console.log(
-          "Profile fetch error: \n",
-          getSimilarApplicantsError,
-          errMsg
-        );
+  async function getSimilarApplicants() {
+    try {
+      const getSimilarApplicantsResponse = await axios.get(
+        "/api/get_similar_applicants"
+      );
+      // console.log(getSimilarApplicantsResponse);
+      setDisplayData(getSimilarApplicantsResponse.data.Applicants);
+      setIsLoading(false);
+    } catch (getSimilarApplicantsError) {
+      const errMsg = getSimilarApplicantsError.response.data.detail;
+      console.log("Profile fetch error: \n", getSimilarApplicantsError, errMsg);
 
-        //If cookies not set
-        if (errMsg.includes("not provided")) {
-          alert("Session not started, please login again");
-          navigate("/");
-          return;
-        }
+      //If cookies not set
+      if (errMsg.includes("not provided")) {
+        alert("Session not started, please login again");
+        navigate("/");
+        return;
+      }
 
-        //If access token expired
-        if (errMsg.includes("invalid or expired")) {
-          try {
-            const refreshTokenMsg = await getRefreshToken();
-          } catch (refreshError) {
-            console.log("Refresh error: ", refreshError);
+      //If access token expired
+      if (errMsg.includes("invalid or expired")) {
+        try {
+          const refreshTokenMsg = await getRefreshToken();
+        } catch (refreshError) {
+          console.log("Refresh error: ", refreshError);
 
-            //If refresh token expired
-            if (refreshError.message == "Refresh token expired") {
-              alert("Session expired, please login again");
-              navigate("/");
-              return;
-            }
+          //If refresh token expired
+          if (refreshError.message == "Refresh token expired") {
+            alert("Session expired, please login again");
+            navigate("/");
+            return;
           }
         }
       }
     }
+  }
 
+  async function getSimilarJobs() {
+    try {
+      const getSimilarJobs = await axios.get("/api/get_similar_jobs");
+      // console.log(getSimilarJobs);
+      setDisplayData(getSimilarJobs.data.Jobs);
+      setIsLoading(false);
+    } catch (getSimilarJobsError) {
+      const errMsg = getSimilarJobsError.response.data.detail;
+      console.log("Profile fetch error: \n", getSimilarJobsError, errMsg);
+
+      //If cookies not set
+      if (errMsg.includes("not provided")) {
+        alert("Session not started, please login again");
+        navigate("/");
+        return;
+      }
+
+      //If access token expired
+      if (errMsg.includes("invalid or expired")) {
+        try {
+          const refreshTokenMsg = await getRefreshToken();
+        } catch (refreshError) {
+          console.log("Refresh error: ", refreshError);
+
+          //If refresh token expired
+          if (refreshError.message == "Refresh token expired") {
+            alert("Session expired, please login again");
+            navigate("/");
+            return;
+          }
+        }
+      }
+    }
+  }
+  useEffect(() => {
     setSearchString("");
-    if (!isDevelopment) {
+    if (isDevelopment) {
+      setDisplayData(searchType === "jobs" ? mockJobs : mockCandidates);
+      setTimeout(() => {
+        setIsLoading(false);
+      }, 300);
+    } else {
       if (searchType === "applicants") {
         getSimilarApplicants();
+        return;
+      } else if (searchType === "jobs") {
+        getSimilarJobs();
         return;
       }
     }
     // Set initial results based on the search mode
-    setDisplayData(searchType === "jobs" ? mockJobs : mockCandidates);
-    setIsLoading(false);
+    // setDisplayData(searchType === "jobs" ? mockJobs : mockCandidates);
+    // setIsLoading(false);
   }, [searchType]);
 
   useEffect(() => {
@@ -261,15 +294,26 @@ export default function SearchPage() {
     //Check for development
     if (isDevelopment) {
       handleSearch();
+      setIsLoading(false);
     } else {
-      //Return if searching for jobs()not implemented yet
+      //Return if no search query
+      if (!searchString.trim()) {
+        //Returning similar based on search type
+        if (searchType === "jobs") {
+          getSimilarJobs();
+          return;
+        } else {
+          getSimilarApplicants();
+          return;
+        }
+      }
+
+      //Temporary=> Return if searching for jobs(not implemented yet)
       if (searchType === "jobs") {
         return;
+      } else {
+        getSearchedData();
       }
-    }
-
-    if (searchString.trim()) {
-      getSearchedData();
     }
   }, [searchString]);
 
@@ -279,13 +323,19 @@ export default function SearchPage() {
         <div className="search-tabs">
           <button
             className={`tab ${searchType === "jobs" ? "active" : ""}`}
-            onClick={() => setSearchType("jobs")}
+            onClick={() => {
+              setIsLoading(true);
+              setSearchType("jobs");
+            }}
           >
             Search Jobs
           </button>
           <button
             className={`tab ${searchType === "applicants" ? "active" : ""}`}
-            onClick={() => setSearchType("applicants")}
+            onClick={() => {
+              setIsLoading(true);
+              setSearchType("applicants");
+            }}
           >
             Search Applicants
           </button>
@@ -349,7 +399,7 @@ const JobCard = ({ job }) => {
       <div className="job-card-content">
         <p className="job-description">{job.description}</p>
         <div className="job-skills">
-          {job.skills.map((skill, index) => (
+          {job.requirements.map((skill, index) => (
             <span key={index} className="skill-tag">
               {skill}
             </span>

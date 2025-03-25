@@ -6,9 +6,9 @@ import { ChevronDown } from "lucide-react";
 import getRefreshToken from "../refresh_token";
 const isDevelopment = import.meta.env.VITE_IS_DEVELOPMENT === "true";
 
-export default function NavBar({ username = "default username" }) {
+export default function NavBar({ setProfile, profile }) {
   const [isOpen, setIsOpen] = useState(false);
-  const [profile, setProfile] = useState({ username: "Default Username" });
+
   const navigate = useNavigate();
   const location = useLocation();
 
@@ -142,7 +142,7 @@ export default function NavBar({ username = "default username" }) {
       <div className="navbar-profile" onClick={() => setIsOpen(!isOpen)}>
         <div className="navbar-profile-closed">
           <button className="navbar-profile-button" />
-          <h3>{username}</h3>
+          <h3>{profile.username}</h3>
           <ChevronDown />
         </div>
         {isOpen && (

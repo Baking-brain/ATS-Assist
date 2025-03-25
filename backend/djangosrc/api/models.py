@@ -39,8 +39,13 @@ class Applicant(AbstractBaseUser):
 
 
 class Job(models.Model):
-    name = models.CharField(max_length=20, unique=True)
+    company = models.CharField(max_length=100, default="Generic Company")
     requirements = models.ManyToManyField(Skill, related_name='jobs')
+    title = models.CharField(max_length=100, default=None)
+    location = models.CharField(max_length=100, default=None)
+    salary = models.FloatField(default=None)
+    description = models.CharField(max_length=250, default="")
+
 
     def __str__(self):
         return self.name
