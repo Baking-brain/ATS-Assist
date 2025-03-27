@@ -1,5 +1,5 @@
 import math
-from cosine_similarity import cos_sim
+from .cosine_similarity import cos_sim
 
 def get_tf_idf(all_skills, user_skills, jobs):
 

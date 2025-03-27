@@ -9,7 +9,7 @@
   background-color: #3d2a27;
   display: flex;
   align-items: center;
-  justify-content: space-between;
+  justify-content: space-around;
   padding: 0 16px;
 }
 
@@ -30,6 +30,7 @@
 
 .navbar-profile {
   position: relative;
+  cursor: pointer;
 }
 
 .navbar-profile-button {
@@ -38,7 +39,6 @@
   background-color: #d9b99b;
   border-radius: 50%;
   border: none;
-  cursor: pointer;
 }
 
 .navbar-dropdown {
@@ -63,4 +63,27 @@
 
 .navbar-dropdown a:hover {
   background-color: #d9b99b;
+}
+
+.navbar-pages-con {
+  display: flex;
+  gap: 32px;
+  color: white;
+}
+.navbar-pages-con h4 {
+  background-color: rgba(255, 255, 255, 0.179);
+  padding: 12px 16px;
+  border-radius: 8px;
+  cursor: pointer;
+}
+.navbar-pages-con h4:hover {
+  background-color: rgba(255, 255, 255, 0.418);
+  color: rgb(53, 53, 53);
+}
+
+.navbar-profile-closed {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+  color: white;
 }
