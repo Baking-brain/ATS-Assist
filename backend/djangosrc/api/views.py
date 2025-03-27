@@ -135,8 +135,9 @@ class get_profile(APIView):
 
     def get(self, request):
 
-        applicant = Applicant.objects.filter(username = request.user)
-        applicant = ApplicantSerializer(applicant, many = True).data[0]
+        applicant = Applicant.objects.get(username = request.user)
+        applicant = GetApplicantProfileSerializer(applicant).data
+        applicant['skills'] = [Skill.objects.get(id=skill_id).name for skill_id in applicant['skills']]
 
         return Response({"Profile":applicant})
 

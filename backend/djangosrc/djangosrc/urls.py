@@ -44,6 +44,7 @@ urlpatterns = [
     path('', views.serve_react.as_view()),
     path('dashboard', views.serve_react.as_view()),
     path('search', views.serve_react.as_view()),
+    path('profile', views.serve_react.as_view()),
 
     
 ]

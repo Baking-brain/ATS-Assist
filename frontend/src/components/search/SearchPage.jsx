@@ -115,7 +115,6 @@ export default function SearchPage() {
 
     // Simulate search delay
     let results = displayData;
-    console.log("Results", results);
 
     // Filter by search query if provided
     if (searchString.trim()) {
@@ -139,7 +138,6 @@ export default function SearchPage() {
             )
         );
       }
-      console.log("Filtered results: ", results);
       setDisplayData(results);
     }
   };
@@ -287,7 +285,7 @@ export default function SearchPage() {
           setDisplayData(response.data);
         })
         .catch((error) => {
-          console.log("Error=> ", error);
+          console.log("Search Error=> ", error);
         });
     }
 

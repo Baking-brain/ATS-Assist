@@ -31,10 +31,16 @@ class Applicant(AbstractBaseUser):
     skills = models.ManyToManyField(Skill, related_name='applicants')
     experience = models.FloatField(default=None)
     education = models.CharField(max_length=100, default=None)
+    about = models.TextField(default="")
+    email = models.EmailField(max_length=255, default=None)
+    location = models.CharField(max_length=255, default=None)
 
     USERNAME_FIELD = 'username'
 
     objects = ApplicantManager()
+
+    def __str__(self):
+        return self.username
 
 
 
