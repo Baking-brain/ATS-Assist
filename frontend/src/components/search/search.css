@@ -75,8 +75,8 @@
 
 /* Profile card container */
 #search-con #item-con {
-  display: flex;
-  flex-wrap: wrap;
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
   gap: 24px;
   justify-content: center;
   font-size: 1.2rem;

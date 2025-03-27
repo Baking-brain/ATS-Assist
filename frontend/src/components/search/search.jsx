@@ -21,7 +21,7 @@ function Item({ username, skills }) {
   );
 }
 
-export default function SearchPage() {
+export default function Search() {
   const [displayData, setDisplayData] = useState([
     {
       username: "test1",

@@ -8,7 +8,9 @@ from rest_framework_simplejwt.exceptions import InvalidToken
 from .authentication import custom_jwtauthentication
 from rest_framework.permissions import IsAuthenticated
 from .models import Applicant, Skill, Job
+from django.db.models import Prefetch
 from .recommendation.cosine_similarity import cos_sim
+from .recommendation.recommend_jobs import recommend_similar_jobs
 
 # Create your views here.
 class test_view(APIView):
@@ -53,7 +55,7 @@ class login(APIView):
         password = request.data['password']
         print(username, password)
 
-        if not username or not password:
+        if (not username) or (not password):
             raise exceptions.ValidationError("Credentials not provided")
 
 
@@ -63,7 +65,7 @@ class login(APIView):
             check_password = user.check_password(password)
             if check_password:
                 token = RefreshToken.for_user(user)
-                response = Response({"access_token":str(token.access_token), "refresh_token":str(token)})
+                response = Response({"Profile":GetApplicantProfileSerializer(user).data})
 
                 response.set_cookie("access_token", str(token.access_token))
                 response.set_cookie("refresh_token", str(token))
@@ -71,13 +73,16 @@ class login(APIView):
                 return response
             
             else:
-                return Response({"status":"missing password or username"}, status=status.HTTP_401_UNAUTHORIZED)
+                return Response({"status":"Incorrect Credentials"}, status=status.HTTP_401_UNAUTHORIZED)
 
     
         except Exception as e:
             print("\n\nGenerate Error: ",e)
             
-            return Response({"Status":"Something went wrong"}, status=status.HTTP_401_UNAUTHORIZED)
+            if "Applicant matching query does not exist" in str(e):
+                return Response({"status":"Incorrect credentials"}, status=status.HTTP_401_UNAUTHORIZED)
+            
+            return Response({"status":"Something went wrong"}, status=status.HTTP_401_UNAUTHORIZED)
 
 class refresh_token(APIView):
     
@@ -114,7 +119,7 @@ class logout(APIView):
 
     def get(self, request):
 
-        if not (request.COOKIES.get('access_token') and request.COOKIES.get('access_token')):
+        if (not request.COOKIES.get('access_token') or (not request.COOKIES.get('refresh_token'))):
             return Response({"status":"no token found"})
 
         response = Response({"status":"ok"})
@@ -237,8 +242,15 @@ class get_similar_applicants(APIView):
         
         #Get similar applicants profile
         similar_profiles = []
-        for applicant, score in applicants.items():
+        for applicant in applicants.keys():
             temp_profile = GetApplicantProfileSerializer(Applicant.objects.get(username=applicant)).data
+
+            #Convert skill ids into skill names
+            temp_skills = []
+            for skill_id in temp_profile['skills']:
+                skill = Skill.objects.get(id=skill_id)
+                temp_skills.append(skill.name)
+            temp_profile['skills'] = temp_skills
             similar_profiles.append(temp_profile)
 
         return Response({"Applicants":similar_profiles, "Scores":applicants})
@@ -293,17 +305,40 @@ class add_jobs(APIView):
         return Response({"Jobs Req":job_requirements})
 
 class get_similar_jobs(APIView):
-    authentication_classes = []
-    permission_classes = []
+    authentication_classes = [custom_jwtauthentication]
+    permission_classes = [IsAuthenticated]
 
     def get(self, request):
 
         username = request.user
-        jobs = JobSerializer(Job.objects.all(), many=True).data
+
+        #Get user skills names
+        user = Applicant.objects.get(username=username)
+        user_skills = [skill.name for skill in user.skills.all()]
+
+
+        #Get all skill names
+        all_skills = [skill.name for skill in Skill.objects.all()]
+
+        jobs = Job.objects.all()
+
+        all_jobs_requirements = []
+        for job in jobs:
+            job_req = [req.name for req in job.requirements.all()]
+            all_jobs_requirements.append(job_req)
+
+        generic_recommended_jobs = recommend_similar_jobs(all_skills=all_skills, user_skills=user_skills, all_jobs_requirements=all_jobs_requirements)
+
+        recommended_jobs = [] 
+        for job_name_index in generic_recommended_jobs.keys():
+            temp_job = jobs[int(job_name_index[-1]) - 1]
+            temp_job = JobSerializer(temp_job).data
+            temp_job['requirements'] = [Skill.objects.get(id=skill_id).name for skill_id in temp_job['requirements']]
+            recommended_jobs.append(temp_job)
 
 
 
-        return Response({"Jobs": jobs})
+        return Response({"Jobs":recommended_jobs})
 
 class get_search_results(APIView):
     authentication_classes = []
@@ -325,38 +360,41 @@ class get_search_results(APIView):
             return Response([])
 
         #Return search query results for applicants
-        if search_type == 'applicant':
-
-            applicants = []
+        if search_type == 'applicants':
+            # Filter skills by search string
             matching_skills = Skill.objects.filter(name__icontains=search_string)
-            for skill in matching_skills:
-                temp_applicants = ApplicantSerializer(skill.applicants.all(), many=True).data
-                for temp_applicant in temp_applicants:
+            
+            # Get applicants with skills that match the search
+            applicants = Applicant.objects.filter(skills__in=matching_skills).distinct()
 
-                    temp_skills_index = temp_applicant['skills']
-                    temp_skills = []
-                    for skill_index in temp_skills_index:
-                        temp_skill_name = Skill.objects.get(id=skill_index).name
-                        temp_skills.append(temp_skill_name)
+            # Prefetch skills associated with the applicants to avoid multiple queries
+            applicants = applicants.prefetch_related('skills')
 
-                    temp_applicant = {'username': temp_applicant['username'],'skills':temp_skills}
-                    applicants.append(temp_applicant)
-
-
-
-            #Filter applicants to remove duplicates
-            seen_applicants = set()
-            filtered_applicants = []
+            # Prepare the data for response
+            applicant_data = []
             for applicant in applicants:
-                if applicant['username'] not in seen_applicants:
-                    filtered_applicants.append(applicant)
-                    seen_applicants.add(applicant['username'])
+                # Extract skills associated with the applicant
+                temp_skills = [skill.name for skill in applicant.skills.all()]
+                print(applicant.skills.all())
 
-            return Response(filtered_applicants)
+                # Prepare the applicant info with skills
+                applicant_info = GetApplicantProfileSerializer(applicant).data
+
+                #Convert skill ids into skill names
+                temp_skills = []
+                for skill_id in applicant_info['skills']:
+                    skill = Skill.objects.get(id=skill_id)
+                    temp_skills.append(skill.name)
+                applicant_info['skills'] = temp_skills
+
+                applicant_data.append(applicant_info)
+
+            # Return the unique list of applicants (distinct already handled by query)
+            return Response(applicant_data)
         
 
         #Return search query results for jobs
-        elif search_type == 'job' :
+        elif search_type == 'jobs' :
 
             jobs = []
             matching_skills = Skill.objects.filter(name__icontains=search_string)
