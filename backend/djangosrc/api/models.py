@@ -4,15 +4,15 @@ from django.contrib.auth.models import AbstractBaseUser, BaseUserManager
 
 # Create your models here.
 class ApplicantManager(BaseUserManager):
-    def create_user(self, username, password):
-        applicant = self.model(username = username)
+    def create_user(self, username, password, name):
+        applicant = self.model(username = username, name = name)
         applicant.set_password(password)
         applicant.save(using=self._db)
 
         return applicant
     
-    def create_superuser(self, username, password):
-        return self.create_user(username, password)
+    def create_superuser(self, username, password, name):
+        return self.create_user(username, password, name)
     
 
 
@@ -26,14 +26,14 @@ class Skill(models.Model):
 
 class Applicant(AbstractBaseUser):
     username = models.CharField(max_length=20, unique=True)
-    name = models.CharField(max_length=30, default=None)
+    name = models.CharField(max_length=30, default="")
     password = models.CharField(max_length=128)
     skills = models.ManyToManyField(Skill, related_name='applicants')
-    experience = models.FloatField(default=None)
-    education = models.CharField(max_length=100, default=None)
+    experience = models.FloatField(default=0)
+    education = models.CharField(max_length=100, default="")
     about = models.TextField(default="")
-    email = models.EmailField(max_length=255, default=None)
-    location = models.CharField(max_length=255, default=None)
+    email = models.EmailField(max_length=255)
+    location = models.CharField(max_length=255, default="")
 
     USERNAME_FIELD = 'username'
 
