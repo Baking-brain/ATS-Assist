@@ -13,6 +13,9 @@ export default function NavBar({ setProfile, profile }) {
   const location = useLocation();
 
   async function handleLogout() {
+    const confirmation = window.confirm("Are you sure");
+    if (!confirmation) return;
+
     await axios
       .get("/api/logout")
       .then((response) => {
@@ -29,7 +32,7 @@ export default function NavBar({ setProfile, profile }) {
     async function get_profile() {
       try {
         const profileResponse = await axios.get("/api/get_profile");
-        console.log(profileResponse);
+        console.log("Navbar profile fetch: ", profileResponse);
         setProfile(profileResponse.data.Profile);
       } catch (profileFetchError) {
         const errMsg = profileFetchError.response.data.detail;
@@ -112,7 +115,7 @@ export default function NavBar({ setProfile, profile }) {
     if (!isDevelopment && location.pathname !== "/") {
       get_profile();
     }
-  }, []);
+  }, [location.pathname]);
 
   if (location.pathname === "/") {
     return <nav className="navbar"></nav>;
@@ -120,7 +123,7 @@ export default function NavBar({ setProfile, profile }) {
 
   return (
     <nav className="navbar">
-      <div className="navbar-logo"></div>
+      {/* <div className="navbar-logo"></div> */}
 
       <div className="navbar-pages-con">
         <h4
@@ -139,15 +142,37 @@ export default function NavBar({ setProfile, profile }) {
         </h4>
       </div>
 
-      <div className="navbar-profile" onClick={() => setIsOpen(!isOpen)}>
+      <div
+        tabIndex={0}
+        className="navbar-profile"
+        onClick={() => setIsOpen(!isOpen)}
+        onBlur={() => {
+          setIsOpen(false);
+        }}
+      >
         <div className="navbar-profile-closed">
-          <button className="navbar-profile-button" />
+          <div className="navbar-profile-button">
+            <p>
+              {profile.name
+                .split(" ")
+                .map((name) => {
+                  return name[0];
+                })
+                .join("")}
+            </p>
+          </div>
           <h3>{profile.username}</h3>
           <ChevronDown />
         </div>
         {isOpen && (
           <div className="navbar-dropdown">
-            <p>Edit Profile</p>
+            <p
+              onClick={() => {
+                navigate("/profile");
+              }}
+            >
+              Edit Profile
+            </p>
             <p onClick={handleLogout}>Log Out</p>
           </div>
         )}

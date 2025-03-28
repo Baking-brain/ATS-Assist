@@ -39,7 +39,7 @@ export default function LoginSignup({ setProfile }) {
       })
       .then((response) => {
         console.log(response.data);
-        setProfile(response.data.Profile);
+        // setProfile(response.data.Profile);
         setIsLoading(false);
         navigate("/dashboard");
       })
