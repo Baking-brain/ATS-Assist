@@ -1,9 +1,14 @@
-trials-for-dev/Pdf-test/__pycache__
-trials-for-dev/djangotutorial/venv
 venv
 
 resume_enhancer
 
-model/job_role_classifier.pth
+model/Classf_Resume/job_role_classifier.pth
+model/Return_keywords/bert_keywords.pth
 
 .DS_Store
+
+resume_processing_project/.DS_Store
+model/.DS_Store
+
+model/llm_insights/.env
+model/Text_extracn/.env
