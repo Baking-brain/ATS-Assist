@@ -2,12 +2,12 @@
 A resume enhancer leveraging NLP and Classification
 
 ## Overview
-ATS-Assist is an AI-powered resume enhancement tool that analyzes resumes using Natural Language Processing (NLP) and suggests relevant keywords to improve their alignment with industry expectations and Applicant Tracking Systems (ATS). The system extracts text from resumes, classifies job roles, and generates domain-specific keywords to help users refine their resumes for better job matching.
+ATS-Assist is an AI-powered resume enhancement tool that analyzes resumes using Natural Language Processing (NLP) and suggests relevant keywords to improve their alignment with industry expectations and Applicant Tracking Systems (ATS). The system extracts text from resumes, classifies job roles, and generates domain-specific keywords to help users refine their resumes for better opportunities.
 
 ## Tech Stack
 - **Programming Language:** Python
 - **Machine Learning:** BERT (Bidirectional Encoder Representations from Transformers)
-- **Text Extraction:** LLAMA Parse
+- **Text Extraction:** Llama Parse
 - **Frameworks & Libraries:**
   - Transformers (Hugging Face)
   - PyTorch
