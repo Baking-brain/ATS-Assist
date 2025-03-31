@@ -1,4 +1,4 @@
-.resume-upload {
+/* .resume-upload {
     position: fixed;
     top: 64px;
     left: 50%;
@@ -64,4 +64,165 @@
 
 .upload-file-button:hover {
     opacity: 0.9;
+} */
+
+/* General container for the resume upload section */
+.resume-upload {
+  position: fixed;
+  top: 55px;
+  left: 50%;
+  transform: translateX(-50%);
+  width: 35%;
+  background-color: #f8f7f3; /* Lighter background */
+  border-radius: 12px;
+  overflow: hidden;
+  transition: max-height 0.3s ease-in-out;
+  z-index: 5;
+  box-shadow: 0 6px 15px rgba(0, 0, 0, 0.1); /* Soft shadow */
+  padding: 0;
+}
+
+/* Collapsed state */
+.resume-upload.closed {
+  max-height: 50px;
+  padding-bottom: 0;
+}
+
+/* Open state */
+.resume-upload.open {
+  max-height: 1000px;
+  padding-bottom: 20px;
+}
+
+.upload-drop {
+  width: 100%;
+  height: 60px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 10px;
+  padding: 0 20px;
+  background-color: #bfa47a; /* Warm beige background */
+  color: #3d2a27; /* Dark brown text */
+  font-weight: bold;
+  font-size: 18px;
+  border: none;
+  cursor: pointer;
+  transition: background-color 0.3s ease;
+  border-bottom: 2px solid #c4a484;
+}
+
+.upload-drop:hover {
+  background-color: #a88d64; /* Darker beige on hover */
+}
+
+/* Container for the upload section */
+.upload-content {
+  padding: 24px 20px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  background-color: #fff;
+  border-radius: 12px;
+}
+
+/* Title for the upload section */
+.upload-title {
+  font-size: 20px;
+  color: #3d2a27;
+  font-weight: bold;
+  font-style: italic;
+  margin-bottom: 20px;
+  text-align: center;
+}
+
+/* Hide the file input */
+.file-input {
+  display: none;
+}
+
+/* Button for selecting the file */
+.upload-file-button {
+  width: 100%;
+  height: 48px;
+  background-color: #c4a484;
+  color: #fff;
+  border-radius: 8px;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 16px;
+  font-weight: bold;
+  border: 2px solid #c4a484;
+  transition: background-color 0.3s ease, transform 0.2s ease;
+  margin-top: 16px;
+}
+
+.upload-file-button:hover {
+  background-color: #b5976e;
+  transform: translateY(-2px);
+}
+
+.upload-file-button:active {
+  background-color: #a08a5a;
+  transform: translateY(0);
+}
+
+/* Drag-and-Drop Area Styling */
+.drag-area {
+  width: 100%;
+  height: 120px;
+  border: 2px dashed #c4a484;
+  border-radius: 8px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-direction: column;
+  background-color: #f1f0eb;
+  transition: background-color 0.3s ease;
+  padding: 12px;
+  text-align: center;
+}
+
+.dragging {
+  background-color: #d9b99b; /* Light beige when dragging over */
+}
+
+.drag-area p {
+  font-size: 16px;
+  color: #3d2a27;
+  font-weight: bold;
+}
+
+.file-name {
+  font-size: 16px;
+  color: #3d2a27;
+  font-weight: bold;
+}
+
+/* Custom Action Button */
+.custom-action-button {
+  width: 100%;
+  height: 48px;
+  background-color: #b5976e;
+  color: #fff;
+  border-radius: 8px;
+  cursor: pointer;
+  font-size: 16px;
+  font-weight: bold;
+  transition: background-color 0.3s ease, transform 0.2s ease;
+  margin-top: 20px;
+  padding: 8px;
+}
+
+.custom-action-button:hover {
+  background-color: #a0805a;
+  transform: translateY(-2px);
+}
+
+.custom-action-button:active {
+  background-color: #8c6a46;
+  transform: translateY(0);
 }

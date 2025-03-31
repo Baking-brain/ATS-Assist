@@ -1,18 +1,16 @@
 .dashboard {
-    min-height: 100vh;
-    background-color: #F5F5DC;
-    padding: 20px;
+  min-height: 100vh;
+  background-color: #f5f5dc;
+  padding: 60px;
 }
 
 .container {
-    max-width: 1200px;
-    margin: 0 auto;
-    padding: 20px;
-    margin-top: 64px;
+  max-width: 1600px;
+  margin-top: 64px;
 }
 
 .grid {
-    display: grid;
-    grid-template-columns: 1fr 1fr;
-    gap: 20px;
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 20px;
 }
