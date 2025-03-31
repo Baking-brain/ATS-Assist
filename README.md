@@ -49,8 +49,8 @@ ATS-Assist is an AI-powered resume enhancement tool that analyzes resumes using 
 ### Installation
 ```sh
 # Clone the repository
-git clone https://github.com/your-repo/ats-assist.git
-cd ats-assist
+git clone https://github.com/Baking-brain/ATS-Assist.git
+cd ATS-Assist
 
 # Create a virtual environment
 python -m venv venv
