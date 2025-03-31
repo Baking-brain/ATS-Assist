@@ -56,8 +56,8 @@ export default function Dashboard() {
       <ResumeUpload />
       <main className="container">
         <div className="grid">
-          <ContentBlock />
           <ContentBlock buttons />
+          <ContentBlock />
         </div>
       </main>
     </div>

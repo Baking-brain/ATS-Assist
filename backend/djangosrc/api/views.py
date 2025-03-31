@@ -9,6 +9,7 @@ from .authentication import custom_jwtauthentication
 from rest_framework.permissions import IsAuthenticated
 from .models import Applicant, Skill, Job
 from django.db.models import Prefetch
+from rest_framework.parsers import MultiPartParser, FormParser
 from .recommendation.cosine_similarity import cos_sim
 from .recommendation.recommend_jobs import recommend_similar_jobs
 
@@ -426,6 +427,25 @@ class get_search_results(APIView):
             
 
         raise SyntaxError("Invalid type provided")
+
+class FileUpload(APIView):
+    parser_classes = [MultiPartParser, FormParser]
+
+    def post(self, request):
+        file = request.FILES.get('file')  # Extract the file from the request
+
+        if not file:
+            raise ValueError("File not provided")
+
+        # Process the PDF file (for example, you could read the contents here)
+        try:
+            # Read the PDF content (this is just an example; modify as needed)
+            return Response({"Uploaded File":file.name})
+            
+
+        except Exception as e:
+            return Response({"error": str(e)}, status=status.HTTP_400_BAD_REQUEST)
+
 
 
 
