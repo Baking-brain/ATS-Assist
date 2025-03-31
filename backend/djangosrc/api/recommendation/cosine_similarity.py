@@ -10,7 +10,7 @@ def cos_sim(vec1, vec2):
 
     dot_prod = sum(i*j for i,j in zip(vector1, vector2))
 
-    cosx = dot_prod/(vec1_mag*vec2_mag)
+    cosx = dot_prod/((vec1_mag*vec2_mag) or 1)
 
     return round(cosx, 5)
 

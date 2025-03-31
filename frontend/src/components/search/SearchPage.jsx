@@ -217,6 +217,8 @@ export default function SearchPage() {
           }
         }
       }
+    } finally {
+      setIsLoading(false);
     }
   }
 
@@ -252,8 +254,11 @@ export default function SearchPage() {
           }
         }
       }
+    } finally {
+      setIsLoading(false);
     }
   }
+
   useEffect(() => {
     setSearchString("");
     if (isDevelopment) {
@@ -265,7 +270,8 @@ export default function SearchPage() {
       if (searchType === "applicants") {
         getSimilarApplicants();
         return;
-      } else if (searchType === "jobs") {
+      }
+      if (searchType === "jobs") {
         getSimilarJobs();
         return;
       }
@@ -286,6 +292,9 @@ export default function SearchPage() {
         })
         .catch((error) => {
           console.log("Search Error=> ", error);
+        })
+        .finally(() => {
+          setIsLoading(false);
         });
     }
 
@@ -300,17 +309,24 @@ export default function SearchPage() {
         if (searchType === "jobs") {
           getSimilarJobs();
           return;
-        } else {
+        }
+
+        if (searchType === "applicants") {
           getSimilarApplicants();
           return;
         }
       }
 
-      //Temporary=> Return if searching for jobs(not implemented yet)
+      //Return if searching for jobs
       if (searchType === "jobs") {
-        return;
-      } else {
         getSearchedData();
+        return;
+      }
+
+      //Return if searching for jobs
+      if (searchType === "applicants") {
+        getSearchedData();
+        return;
       }
     }
   }, [searchString]);
@@ -322,6 +338,7 @@ export default function SearchPage() {
           <button
             className={`tab ${searchType === "jobs" ? "active" : ""}`}
             onClick={() => {
+              if (searchType === "jobs") return;
               setIsLoading(true);
               setSearchType("jobs");
             }}
@@ -331,6 +348,7 @@ export default function SearchPage() {
           <button
             className={`tab ${searchType === "applicants" ? "active" : ""}`}
             onClick={() => {
+              if (searchType === "applicants") return;
               setIsLoading(true);
               setSearchType("applicants");
             }}
@@ -350,18 +368,20 @@ export default function SearchPage() {
               className="search-input"
               placeholder={`Enter skill`}
               value={searchString}
-              onChange={(e) => setSearchString(e.target.value)}
+              onChange={(e) => {
+                setSearchString(e.target.value);
+              }}
               onKeyDown={(e) => {
                 if (e.key === "Enter") handleSearch();
               }}
             />
-            <button
+            {/* <button
               className="search-button"
               onClick={handleSearch}
               disabled={isLoading}
             >
               {isLoading ? "..." : "Search"}
-            </button>
+            </button> */}
           </div>
         </div>
 
@@ -374,7 +394,7 @@ export default function SearchPage() {
 
 const JobCard = ({ job }) => {
   return (
-    <div className={`job-card ${job.featured ? "featured" : ""}`}>
+    <div className={`job-card`}>
       <div className="job-card-header">
         <div>
           <h3 className="job-title">{job.title}</h3>

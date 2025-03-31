@@ -232,7 +232,7 @@ class get_similar_applicants(APIView):
                     temp_vector.append(0)
 
             similarity_score = cos_sim(user_vector, temp_vector)
-            print(applicant, similarity_score)
+            # print(applicant, similarity_score)
             applicants[applicant] = similarity_score
         
         #Sort according to scores in descending order and filter with score 0 (not at all relevant)
@@ -241,6 +241,8 @@ class get_similar_applicants(APIView):
                                 key=lambda item: item[1], reverse=True
                                  )
                           )
+        
+        print("\nSorted similar applicants: \n", applicants)
         
         #Get similar applicants profile
         similar_profiles = []
@@ -396,34 +398,67 @@ class get_search_results(APIView):
         
 
         #Return search query results for jobs
-        elif search_type == 'jobs' :
+        # elif search_type == 'jobs' :
 
-            jobs = []
+        #     jobs = []
+        #     matching_skills = Skill.objects.filter(name__icontains=search_string)
+        #     for skill in matching_skills:
+        #         temp_jobs = JobSerializer(skill.jobs.all(), many=True).data
+        #         for temp_job in temp_jobs:
+
+        #             temp_skills_index = temp_job['requirements']
+        #             temp_skills = []
+        #             for skill_index in temp_skills_index:
+        #                 temp_skill_name = Skill.objects.get(id=skill_index).name
+        #                 temp_skills.append(temp_skill_name)
+
+        #             temp_job = {'username': temp_job['company'],'skills':temp_skills}
+        #             jobs.append(temp_job)
+
+
+
+        #     #Filter applicants to remove duplicates
+        #     seen_jobs = set()
+        #     filtered_jobs = []
+        #     for job in jobs:
+        #         if job['username'] not in seen_jobs:
+        #             filtered_jobs.append(job)
+        #             seen_jobs.add(job['username'])
+
+        #     return Response(filtered_jobs)
+
+        elif search_type == 'jobs':
+
+            # Filter skills by search string
             matching_skills = Skill.objects.filter(name__icontains=search_string)
-            for skill in matching_skills:
-                temp_jobs = JobSerializer(skill.jobs.all(), many=True).data
-                for temp_job in temp_jobs:
 
-                    temp_skills_index = temp_job['requirements']
-                    temp_skills = []
-                    for skill_index in temp_skills_index:
-                        temp_skill_name = Skill.objects.get(id=skill_index).name
-                        temp_skills.append(temp_skill_name)
+            # Get jobs that match any of the skills
+            jobs = Job.objects.filter(requirements__in=matching_skills).distinct()
 
-                    temp_job = {'username': temp_job['name'],'skills':temp_skills}
-                    jobs.append(temp_job)
+            # Prefetch related skills to avoid multiple queries
+            jobs = jobs.prefetch_related('requirements')
 
-
-
-            #Filter applicants to remove duplicates
-            seen_jobs = set()
-            filtered_jobs = []
+            # Prepare the data for response
+            job_data = []
             for job in jobs:
-                if job['username'] not in seen_jobs:
-                    filtered_jobs.append(job)
-                    seen_jobs.add(job['username'])
+                # Extract skills associated with the job
+                temp_requirements = [requirement.name for requirement in job.requirements.all()]
 
-            return Response(filtered_jobs)
+                # (Serializer can be used) Prepare the job info with skills
+                job_info = {
+                    'company': job.company,
+                    'title': job.title,
+                    'location': job.location,
+                    'salary': job.salary,
+                    'description': job.description,
+                    'requirements': temp_requirements
+                }
+
+                job_data.append(job_info)
+
+            # Return the unique list of jobs (distinct already handled by the query)
+            return Response(job_data)
+
             
 
         raise SyntaxError("Invalid type provided")
