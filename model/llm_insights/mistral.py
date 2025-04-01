@@ -15,34 +15,62 @@ if not HUGGINGFACE_API_KEY:
 client = InferenceClient(token=HUGGINGFACE_API_KEY)
 
 # Default evaluation rubric
-DEFAULT_RUBRIC = """Please evaluate this resume based on the following criteria:
-1. Skills Match (0-10): Alignment of technical and soft skills with job requirements
-2. Experience Relevance (0-10): Relevance and depth of past experiences
-3. Education Fit (0-10): Educational background's relevance to the role
-4. Achievement Impact (0-10): Quantifiable achievements and their significance
-5. Overall Presentation (0-10): Resume formatting, clarity, and professionalism
+DEFAULT_RUBRIC = """
+Please evaluate this resume based on the following criteria:
 
-For each criterion:
-- Provide a score out of 10
-- Give specific feedback
-- Suggest improvements
+### 1️⃣ Skills & Experience Relevance (0-10)
+- Alignment of technical and soft skills with job requirements
+- Relevance and depth of past experiences
 
-Then calculate:
-- Total Score: Sum of all criteria (max 50)
-- Match Percentage: Total score as a percentage
-- Final Recommendation: Shortlist/Consider/Reject based on match percentage
+### 2️⃣ Education & Certifications (0-10)
+- Relevance of educational background to the role
+- Additional certifications that add value
 
-Format your response as follows:
-[Scoring]
-- List each criterion score and feedback
+### 3️⃣ Achievement Impact (0-10)
+- Presence of quantifiable achievements (e.g., metrics, awards)
+- Clear demonstration of professional impact
 
-[Improvements]
-- Specific suggestions for each section
+### 4️⃣ Resume Structure & Presentation (0-10)
+- Clarity, organization, and formatting
+- Professional appearance and readability
 
-[Final Assessment]
-- Total Score: X/50
-- Match Percentage: X%
-- Recommendation: [Shortlist/Consider/Reject]"""
+### 5️⃣ Grammar & Clarity (0-10)
+- Grammar, spelling, and sentence clarity
+- Logical flow of information
+
+For each **criterion**:
+- **Provide a score out of 10**
+- **Give specific feedback**
+- **Suggest step-by-step improvements**
+
+---
+
+### [Detailed Evaluation]
+
+🔹 Skills & Experience Relevance: X/10  
+⚡ Suggested Improvements:  
+
+🔹 Education & Certifications: X/10   
+⚡ Suggested Improvements:  
+
+🔹 Achievement Impact: X/10  
+⚡ Suggested Improvements:  
+
+🔹 Resume Structure & Presentation: X/10   
+⚡ Suggested Improvements:  
+
+🔹 Grammar & Clarity: X/10  
+✍️ Feedback: 
+✅ Identified grammar/spelling issues  
+⚡ Suggested fixes (listed one by one):  
+
+---
+
+### [Final Assessment]
+📊 Total Score: X/50  
+📈 Match Percentage: X%  
+✅ Final Recommendation: Shortlist / Consider / Reject  
+"""
 
 # Set your resume text here
 resume_text = """
@@ -128,3 +156,33 @@ if __name__ == "__main__":
     print("RESUME ANALYSIS RESULT")
     print("="*50)
     print(analysis_result)
+
+
+    """Please evaluate this resume based on the following criteria:
+1. Skills Match (0-10): Alignment of technical and soft skills with job requirements
+2. Experience Relevance (0-10): Relevance and depth of past experiences
+3. Education Fit (0-10): Educational background's relevance to the role
+4. Achievement Impact (0-10): Quantifiable achievements and their significance
+5. Overall Presentation (0-10): Resume formatting, clarity, and professionalism
+
+For each criterion:
+- Provide a score out of 10
+- Give specific feedback
+- Suggest improvements
+
+Then calculate:
+- Total Score: Sum of all criteria (max 50)
+- Match Percentage: Total score as a percentage
+- Final Recommendation: Shortlist/Consider/Reject based on match percentage
+
+Format your response as follows:
+[Scoring]
+- List each criterion score and feedback
+
+[Improvements]
+- Specific suggestions for each section
+
+[Final Assessment]
+- Total Score: X/50
+- Match Percentage: X%
+- Recommendation: [Shortlist/Consider/Reject]"""
