@@ -10,3 +10,4 @@ __pycache__/
 *djangosrc/api/migrations/
 
 *.pth
+*/uploads/*

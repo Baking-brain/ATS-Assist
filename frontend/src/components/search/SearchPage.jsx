@@ -155,7 +155,10 @@ export default function SearchPage() {
     if (displayData.length === 0) {
       return (
         <div className="no-results">
-          <h3>No results found</h3>
+          <h3>
+            No results found
+            <br /> Try searching or Updating profile
+          </h3>
         </div>
       );
     }

@@ -1,20 +1,18 @@
 * {
-    margin: 0;
-    padding: 0;
-    box-sizing: border-box;
-    font-family: Arial, sans-serif;
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+  font-family: Arial, sans-serif;
 }
-
 
 body {
-    background-color: #F5F5DC;
-    min-height: 100vh;
-    display: flex;
-    align-items: center;
-    justify-content: center;
+  background-color: #f5f2eb;
+  min-height: 100vh;
+  display: flex;
+  align-items: center;
+  justify-content: center;
 }
 
-
 #root {
-    width: 100%;
+  width: 100%;
 }

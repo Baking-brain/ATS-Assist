@@ -5,6 +5,14 @@ import LoginPage from "./components/login-signup/LoginPage.jsx";
 import NavBar from "./components/dashboard/nav-bar.jsx";
 import ProfilePage from "./components/profile/ProfilePage.jsx";
 import { useState } from "react";
+import PdfPreview from "./components/test/PDFPreview.jsx";
+
+// import { pdfjs } from "react-pdf";
+
+// pdfjs.GlobalWorkerOptions.workerSrc = new URL(
+//   "pdfjs-dist/build/pdf.worker.min.mjs",
+//   import.meta.url
+// ).toString();
 
 function App() {
   const [profile, setProfile] = useState({
@@ -41,13 +49,18 @@ function App() {
             path="/"
             element={<LoginPage setProfile={setProfile} />}
           />
-          <Route exact path="/dashboard" element={<Dashboard />} />
+          <Route
+            exact
+            path="/dashboard"
+            element={<Dashboard setProfile={setProfile} profile={profile} />}
+          />
           <Route exact path="/search" element={<SearchPage />} />
           <Route
             exact
             path="/profile"
             element={<ProfilePage setProfile={setProfile} profile={profile} />}
           />
+          <Route exact path="/test" element={<PdfPreview />} />
         </Routes>
       </BrowserRouter>
     </div>
