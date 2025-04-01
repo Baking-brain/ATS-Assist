@@ -1,8 +1,16 @@
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import "./ProfilePage.css";
-import { DoorOpen, LockKeyhole, Mail, MapPin } from "lucide-react";
+import {
+  CalendarClock,
+  DoorOpen,
+  GraduationCap,
+  LockKeyhole,
+  Mail,
+  MapPin,
+} from "lucide-react";
 import axios from "axios";
+const isDevelopment = import.meta.env.VITE_IS_DEVELOPMENT === "true";
 
 export default function ProfilePage({ profile, setProfile }) {
   const navigate = useNavigate();
@@ -11,7 +19,7 @@ export default function ProfilePage({ profile, setProfile }) {
   //   const profile = profileProp;
 
   const [activeTab, setActiveTab] = useState("about");
-  //   const [newSkill, setNewSkill] = useState("");
+  const [newSkill, setNewSkill] = useState("");
   //   const [newSkillLevel, setNewSkillLevel] = useState(50);
   //   const [newAdditionalSkill, setNewAdditionalSkill] = useState("");
 
@@ -116,11 +124,64 @@ export default function ProfilePage({ profile, setProfile }) {
   //     setProfile({ ...profile, skills: updatedSkills });
   //   };
 
-  const handleSaveProfile = () => {
-    console.log("Saving profile:", profile);
-    setIsEditing(false);
-    // alert("Profile updated successfully!");
-  };
+  function addNewSkill() {
+    const tempNewSkill = newSkill.trim().toLowerCase();
+    setNewSkill("");
+    if (profile.skills.includes(tempNewSkill)) return;
+
+    setProfile((prev) => ({
+      ...prev,
+      skills: [...prev.skills, tempNewSkill],
+    }));
+  }
+
+  function removeSkill(remSkill) {
+    let tempSkills = profile.skills.filter((skillIter) => {
+      return skillIter.trim().toLowerCase() !== remSkill;
+    });
+    setProfile((prev) => ({
+      ...prev,
+      skills: tempSkills,
+    }));
+  }
+
+  async function updateProfile() {
+    const confirmation = window.confirm("Are you sure?");
+    if (!confirmation) return;
+
+    if (
+      !/^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/.test(profile.email)
+    ) {
+      alert("Email not valid...");
+      return;
+    }
+
+    if (isDevelopment) return;
+
+    try {
+      const updateProfileResponse = await axios.post(
+        "/api/update_applicant_profile",
+        profile
+      );
+      console.log(
+        "Update Profile Response from profile page: ",
+        updateProfileResponse
+      );
+    } catch (error) {
+      console.log("Update Profile Error: ", error);
+    } finally {
+      setIsEditing(false);
+    }
+  }
+
+  // const handleSaveProfile = async () => {
+  //   const confirmation = window.confirm("Are you sure");
+  //   if (!confirmation) return;
+  //   console.log("Saving profile:", profile);
+
+  //   setIsEditing(false);
+  //   // alert("Profile updated successfully!");
+  // };
 
   async function handleLogout() {
     const confirmation = window.confirm("Are you sure");
@@ -148,7 +209,7 @@ export default function ProfilePage({ profile, setProfile }) {
                   isEditing ? "save-button" : "edit-button"
                 }`}
                 onClick={() =>
-                  isEditing ? handleSaveProfile() : setIsEditing(true)
+                  isEditing ? updateProfile() : setIsEditing(true)
                 }
               >
                 {isEditing ? "Save Changes" : "Edit Profile"}
@@ -178,17 +239,6 @@ export default function ProfilePage({ profile, setProfile }) {
                       />
                     </div>
 
-                    {/* <div className="field-group">
-                      <label>Title:</label>
-                      <input
-                        type="text"
-                        value={profile.title}
-                        onChange={(e) =>
-                          handleInputChange(e, "profile", null, "title")
-                        }
-                      />
-                    </div> */}
-
                     <div className="field-group">
                       <label>Email:</label>
                       <input
@@ -196,6 +246,28 @@ export default function ProfilePage({ profile, setProfile }) {
                         value={profile.email}
                         onChange={(e) =>
                           handleInputChange(e, "profile", null, "email")
+                        }
+                      />
+                    </div>
+
+                    <div className="field-group">
+                      <label>Education:</label>
+                      <input
+                        type="text"
+                        value={profile.education}
+                        onChange={(e) =>
+                          handleInputChange(e, "profile", null, "education")
+                        }
+                      />
+                    </div>
+
+                    <div className="field-group">
+                      <label>Experience (Years):</label>
+                      <input
+                        type="number"
+                        value={profile.experience}
+                        onChange={(e) =>
+                          handleInputChange(e, "profile", null, "experience")
                         }
                       />
                     </div>
@@ -224,9 +296,21 @@ export default function ProfilePage({ profile, setProfile }) {
                       </p>
                       <p className="profile-detail">
                         <span className="icon">
-                          <Mail color="#007FFF" />
+                          <Mail color="orange" />
                         </span>{" "}
                         {profile.email || "NA"}
+                      </p>
+                      <p className="profile-detail">
+                        <span className="icon">
+                          <CalendarClock color="#00CF00" />
+                        </span>{" "}
+                        {profile.experience.toString() + " years" || "NA"}
+                      </p>
+                      <p className="profile-detail">
+                        <span className="icon">
+                          <GraduationCap color="#007FFF" />
+                        </span>{" "}
+                        {profile.education || "NA"}
                       </p>
                     </div>
                   </>
@@ -739,20 +823,39 @@ export default function ProfilePage({ profile, setProfile }) {
                 <div className="skills-section">
                   {/* <div className="additional-skills-section"> */}
                   <h3>Skills</h3>
+                  {isEditing && (
+                    <div className="skill-input-div">
+                      <label htmlFor="skill-input">Add Skill:</label>
+                      <input
+                        id="skill-input"
+                        type="text"
+                        value={newSkill}
+                        onChange={(e) => {
+                          setNewSkill(e.target.value);
+                        }}
+                      />
+                      <button disabled={!newSkill} onClick={addNewSkill}>
+                        Add Skill
+                      </button>
+                    </div>
+                  )}
                   <div className="tag-container">
-                    {profile.skills.map((skill, index) => (
-                      <div key={index} className="skill-tag">
-                        {skill}
-                        {isEditing && (
-                          <button
-                            className="remove-tag"
-                            onClick={() => handleRemoveAdditionalSkill(index)}
-                          >
-                            ✕
-                          </button>
-                        )}
-                      </div>
-                    ))}
+                    {profile.skills.map((skill, index) => {
+                      skill = skill.toLowerCase().trim();
+                      return (
+                        <div key={index} className="skill-tag">
+                          {skill}
+                          {isEditing && (
+                            <button
+                              className="remove-tag"
+                              onClick={() => removeSkill(skill)}
+                            >
+                              ✕
+                            </button>
+                          )}
+                        </div>
+                      );
+                    })}
                     {/* </div> */}
                   </div>
                 </div>

@@ -75,7 +75,7 @@ export default function Dashboard({ setProfile, profile }) {
       );
       console.log("Update Profile Response: ", updateProfileResponse);
     } catch (error) {
-      console.log("Suggest Skills Error: ", error);
+      console.log("Update Profile Error: ", error);
     } finally {
       setIsLoading(false);
     }

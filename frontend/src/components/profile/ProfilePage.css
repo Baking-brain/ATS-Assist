@@ -370,6 +370,41 @@
   margin-bottom: 30px;
 }
 
+.profile-page .skill-input-div {
+  display: flex;
+  gap: 20px;
+}
+
+.profile-page .skill-input-div label {
+  align-items: center;
+  display: inline-flex;
+}
+
+.profile-page .skill-input-div button {
+  background-color: #4f3a3a;
+  color: white;
+  border: none;
+  padding: 8px 12px;
+  border-radius: 4px;
+  font-size: 1rem;
+}
+
+.profile-page .skill-input-div button:hover {
+  background-color: #3c2a2a;
+  transform: scale(1.1);
+}
+
+.profile-page .skill-input-div button:active {
+  transform: scale(1);
+}
+
+.profile-page .skill-input-div input {
+  flex-grow: 1;
+  padding: 8px;
+  border: 1px solid #ddd;
+  border-radius: 4px;
+}
+
 .profile-page .skill-item {
   margin-bottom: 15px;
   position: relative;
