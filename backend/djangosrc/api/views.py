@@ -1,3 +1,5 @@
+import os
+from django.conf import settings
 from django.shortcuts import render
 from rest_framework.views import APIView
 from rest_framework.response import Response
@@ -12,6 +14,7 @@ from django.db.models import Prefetch
 from rest_framework.parsers import MultiPartParser, FormParser
 from .recommendation.cosine_similarity import cos_sim
 from .recommendation.recommend_jobs import recommend_similar_jobs
+from .model import process_file
 
 # Create your views here.
 class test_view(APIView):
@@ -334,7 +337,9 @@ class get_similar_jobs(APIView):
         generic_recommended_jobs = recommend_similar_jobs(all_skills=all_skills, user_skills=user_skills, all_jobs_requirements=all_jobs_requirements)
 
         recommended_jobs = [] 
-        for job_name_index in generic_recommended_jobs.keys():
+        for job_name_index, score in generic_recommended_jobs.items():
+            if not score:
+                continue
             temp_job = jobs[int(job_name_index[-1]) - 1]
             temp_job = JobSerializer(temp_job).data
             temp_job['requirements'] = [Skill.objects.get(id=skill_id).name for skill_id in temp_job['requirements']]
@@ -465,16 +470,35 @@ class get_search_results(APIView):
 
 class FileUpload(APIView):
     parser_classes = [MultiPartParser, FormParser]
+    authentication_classes = [custom_jwtauthentication]
+    permission_classes = [IsAuthenticated]
 
     def post(self, request):
         file = request.FILES.get('file')  # Extract the file from the request
+        username = request.user
+
+        if (not username):
+            raise NameError("Username not provided")
+            
 
         if not file:
             raise ValueError("File not provided")
 
         # Process the PDF file (for example, you could read the contents here)
-        try:
-            # Read the PDF content (this is just an example; modify as needed)
+        try:            
+            # Define the file save location
+            upload_path = os.path.join(settings.BASE_DIR, 'uploads', username.username + ".pdf")
+
+            # Make sure the directory exists
+            os.makedirs(os.path.dirname(upload_path), exist_ok=True)
+            
+            # print("Upload path: ", upload_path)
+            # Open the file in 'wb' mode, which will overwrite if it exists
+            with open(upload_path, 'wb') as f:
+                for chunk in file.chunks():
+                    f.write(chunk)
+            
+            # Return a success response
             return Response({"Uploaded File":file.name})
             
 
@@ -483,10 +507,78 @@ class FileUpload(APIView):
 
 
 
+    def get(self, request):
+        username = request .user
+        action_type = request.GET.get('action_type', None)
+
+        if action_type == 'ai_insights':
+            insight_result =  process_file.get_ai_insights(username.username)
+            return Response({"ai_insight": insight_result})
+        
+
+        if action_type == 'suggest_skills':
+            predicted_keywords = process_file.suggest_skills(username.username)
+            return Response({"suggest_skills": predicted_keywords})
+        
+
+        return Response({"user", "ok"})
+
+class update_applicant_profile(APIView):
+
+    authentication_classes = [custom_jwtauthentication]
+    permission_classes = [IsAuthenticated]
+
+    def post(self, request):
+
+        username = request.user
+        user_skills_to_be_added = request.data['skills']
+        profile_data = request.data
+
+        #Clear Applicant Skills
+        username.skills.clear()
+
+        #Debugging
+        print("Incoming Profile Data")
+        print(profile_data)
+        
+        print("Skills given")
+        print(user_skills_to_be_added)
+
+        print("Skills in database")
+        stored_db_skills = [skill.name for skill in Skill.objects.all()]
+        print(stored_db_skills)
+
+        #Create objects of non-existing skills
+        for incoming_skill in user_skills_to_be_added:
+            incoming_skill.strip().lower()
+            if incoming_skill not in stored_db_skills:
+                Skill.objects.create(name=incoming_skill)
+                print("Created: ", incoming_skill)
+
+        #Convert skills to their skill objects
+        profile_data['skills'] = [Skill.objects.get(name=skill_name).id for skill_name in user_skills_to_be_added ]
+        print("New Profile Data", profile_data)
+        
+        
+        # return Response({"status":"temp ok"})
 
 
+        #Create serializer for updating profile
+        try:
+            serializer = GetApplicantProfileSerializer(username, data=profile_data, partial=True)
+        except Exception as e:
+            print("\n\nSerializer exeptiion", e)
 
 
+        if serializer.is_valid():
+            
+            # Save the updated profile data to the database if valid
+            serializer.save()
+            return Response({'status': 'ok'})
+        else:
+            print("\n\nSerializer validation error", serializer.errors)
+            return Response({'status': 'NOT OK'})
+            
 
 
 

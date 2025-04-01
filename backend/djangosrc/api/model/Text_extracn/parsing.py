@@ -19,6 +19,7 @@ parser = LlamaParse(
 def extract_text_from_pdf(pdf_path):
     """Extract text from a PDF using LlamaParse."""
     try:
+        # print("inside extract text from pdf, file path: ", pdf_path)
         documents = parser.load_data(pdf_path)
         extracted_text = documents[0].text  # Extracted text as a string
         return extracted_text

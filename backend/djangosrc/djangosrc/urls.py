@@ -33,6 +33,7 @@ urlpatterns = [
     path('api/get_skills_applicant', views.get_skills_applicant.as_view()),
     path('api/get_search_results', views.get_search_results.as_view()),
     path('api/file_upload', views.FileUpload.as_view()),
+    path('api/update_applicant_profile', views.update_applicant_profile.as_view()),
 
     #Log in-out
     path('api/login', views.login.as_view()),

@@ -9,6 +9,8 @@ class ApplicantSerializer(serializers.ModelSerializer):
 
 
 class GetApplicantProfileSerializer(serializers.ModelSerializer):
+    skills = serializers.PrimaryKeyRelatedField(queryset=Skill.objects.all(), many=True)
+    
     class Meta:
         model = Applicant
         fields = ['id','username','skills', 'name', 'experience', 'education', 'email', 'about', 'location']
