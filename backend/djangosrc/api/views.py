@@ -550,7 +550,7 @@ class update_applicant_profile(APIView):
 
         #Create objects of non-existing skills
         for incoming_skill in user_skills_to_be_added:
-            incoming_skill.strip().lower()
+            incoming_skill = incoming_skill.strip().lower()
             if incoming_skill not in stored_db_skills:
                 Skill.objects.create(name=incoming_skill)
                 print("Created: ", incoming_skill)
