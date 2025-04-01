@@ -5,6 +5,7 @@ import {
   CalendarClock,
   DoorOpen,
   GraduationCap,
+  Hourglass,
   LockKeyhole,
   Mail,
   MapPin,
@@ -302,8 +303,8 @@ export default function ProfilePage({ profile, setProfile }) {
                       </p>
                       <p className="profile-detail">
                         <span className="icon">
-                          <CalendarClock color="#00CF00" />
-                        </span>{" "}
+                          <Hourglass color="#00CF00" />
+                        </span>
                         {profile.experience.toString() + " years" || "NA"}
                       </p>
                       <p className="profile-detail">

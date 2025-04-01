@@ -62,7 +62,8 @@
 }
 
 #search .tab.active {
-  background-color: #8b5cf6;
+  /* background-color: #8b5cf6; */
+  background-color: #6b4f4f;
   color: white;
 }
 
@@ -96,11 +97,13 @@
 
 #search .search-input:focus {
   outline: none;
-  border-color: #8b5cf6;
+  /* border-color: #8b5cf6; */
+  border-color: #4f3a3a;
 }
 
 #search .search-button {
-  background-color: #8b5cf6;
+  /* background-color: #8b5cf6; */
+  background-color: #3c2a2a;
   color: white;
   border: none;
   border-radius: 0.375rem;
@@ -110,7 +113,8 @@
 }
 
 #search .search-button:hover {
-  background-color: #7c3aed;
+  /* background-color: #7c3aed; */
+  background-color: #4f3a3a;
 }
 
 #search .results-header {
@@ -134,11 +138,13 @@
 }
 
 #search .loading-spinner {
+  /* border: 3px solid rgba(139, 92, 246, 0.3);
+border-top-color: #8b5cf6; */
   width: 40px;
   height: 40px;
-  border: 3px solid rgba(139, 92, 246, 0.3);
+  border: 6px solid #a7a1a1;
   border-radius: 50%;
-  border-top-color: #8b5cf6;
+  border-top-color: #3c2a2a;
   animation: spinner 1s linear infinite;
   margin-bottom: 1rem;
 }
@@ -173,7 +179,8 @@
 }
 
 #search .job-card:hover {
-  border-color: #8b5cf6;
+  /* border-color: #8b5cf6; */
+  border-color: #4f3a3a;
   box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
 }
 
@@ -227,25 +234,32 @@
 }
 
 #search .skill-tag {
-  font-size: 0.8rem;
-  background-color: #66666621;
+  /* background-color: #66666621;
   border-radius: 6px;
-  padding: 8px;
+  padding: 8px; */
+  font-size: 0.8rem;
+  background-color: #f9f4e2;
+  border: solid #e5c26f 1px;
+  color: #3c2a2a;
+  padding: 8px 12px;
+  border-radius: 8px;
 }
 
 #search .apply-button,
 #search .view-profile-button {
-  background-color: #8b5cf6;
+  /* background-color: #8b5cf6; */
+  background-color: #4f3a3a;
   color: white;
   border: none;
-  padding: 0.375rem 0.75rem;
+  padding: 0.575rem 0.75rem;
   border-radius: 0.375rem;
   font-size: 0.875rem;
   cursor: pointer;
 }
 
 #search .apply-button:hover {
-  background-color: #7c3aed;
+  /* background-color: #7c3aed; */
+  background-color: #3c2a2a;
 }
 
 #search .candidate-card {
@@ -257,7 +271,8 @@
 }
 
 #search .candidate-card:hover {
-  border-color: #8b5cf6;
+  /* border-color: #8b5cf6; */
+  border-color: #4f3a3a;
   box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
 }
 
@@ -272,6 +287,10 @@
   display: flex;
   justify-content: space-between;
   padding-top: 16px;
+}
+
+#search .candidate-card-footer {
+  justify-content: end;
 }
 
 @media (max-width: 768px) {

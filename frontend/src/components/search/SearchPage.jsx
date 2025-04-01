@@ -404,13 +404,13 @@ const JobCard = ({ job }) => {
           <div className="job-meta">
             <span className="company">
               <span className="icon">
-                <Building color="#7c3aed" />
+                <Building color="orange" />
                 <p>{job.company}</p>
               </span>
             </span>
             <span className="location">
               <span className="icon">
-                <MapPin color="#7c3aed" />
+                <MapPin color="#F05555" />
                 <p>{job.location}</p>
               </span>
             </span>
@@ -455,13 +455,13 @@ const CandidateCard = ({ candidate }) => {
         <div className="candidate-details">
           <div className="detail-item">
             <span className="icon">
-              <GraduationCap color="#7c3aed" />
+              <GraduationCap color="#007FFF" />
             </span>
             <span>{candidate.education || "Not Provided"}</span>
           </div>
           <div className="detail-item">
             <span className="icon">
-              <Hourglass color="#7c3aed" />
+              <Hourglass color="#00CF00" />
             </span>
             <span>{candidate.experience} years experience</span>
           </div>
