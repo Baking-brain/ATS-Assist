@@ -165,7 +165,7 @@ export default function ResumeUpload() {
                   className="custom-action-button"
                   onClick={() => submitFile()}
                 >
-                  Custom Action
+                  Upload File
                 </button>
               </div>
             )}

@@ -511,6 +511,12 @@ class FileUpload(APIView):
         username = request .user
         action_type = request.GET.get('action_type', None)
 
+        file_path = os.path.join(settings.BASE_DIR, 'uploads', str(username.username) + ".pdf")
+        print("Check file path: ", file_path)
+
+        if not os.path.exists(file_path):
+            return Response("File not found, try uploading again", status=500)
+
         if action_type == 'ai_insights':
             insight_result =  process_file.get_ai_insights(username.username)
             return Response({"ai_insight": insight_result})

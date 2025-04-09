@@ -155,8 +155,10 @@ export default function NavBar({ setProfile, profile }) {
             <p>
               {profile.name
                 .split(" ")
-                .map((name) => {
-                  return name[0];
+                .map((name, index) => {
+                  if (index < 2 && name.trim()) {
+                    return name[0].toUpperCase();
+                  }
                 })
                 .join("")}
             </p>

@@ -29,6 +29,12 @@ export default function Dashboard({ setProfile, profile }) {
       setToAddSkills([]);
     } catch (error) {
       console.log("AI Insight Error: ", error);
+      if (error.response.data.includes("File not found")) {
+        alert(error.response.data);
+      }
+
+      setSuggestedSkills(null);
+      setAiInsight(null);
     } finally {
       setIsLoading(false);
     }
@@ -48,6 +54,12 @@ export default function Dashboard({ setProfile, profile }) {
       setAiInsight(null);
     } catch (error) {
       console.log("Suggest Skills Error: ", error);
+      if (error.response.data.includes("File not found")) {
+        alert(error.response.data);
+      }
+
+      setSuggestedSkills(null);
+      setAiInsight(null);
     } finally {
       setIsLoading(false);
     }
