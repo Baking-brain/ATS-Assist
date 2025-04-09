@@ -45,6 +45,10 @@ export default function ProfilePage({ profile, setProfile }) {
     const value = e.target.value;
 
     if (section === "profile") {
+      if (field === "name") {
+        setProfile({ ...profile, [field]: value.trimStart() });
+        return;
+      }
       setProfile({ ...profile, [field]: value });
     }
     // else if (section === "experience") {
@@ -221,7 +225,10 @@ export default function ProfilePage({ profile, setProfile }) {
                 <div className="avatar-placeholder">
                   {profile.name
                     .split(" ")
-                    .map((name) => name[0])
+                    .map((name, index) => {
+                      if (index < 2 && name.trim())
+                        return name[0].toUpperCase();
+                    })
                     .join("")}
                 </div>
               </div>

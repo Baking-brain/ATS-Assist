@@ -7,6 +7,7 @@
 .container {
   max-width: 1600px;
   margin-top: 16px;
+  margin: auto;
 }
 
 .grid {
