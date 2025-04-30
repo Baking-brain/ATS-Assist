@@ -29,7 +29,7 @@ def get_ai_insights(username):
     print("\n\n\n\nExtracted Text: ", extracted_text[0:150],"\n")
 
     analyse_result = analyze_resume(extracted_text)
-    print("Analyzed Result: ",analyse_result[0:150], "\n")
+    print("Analyzed Result: ",analyse_result, "\n")
 
     return analyse_result
 
@@ -49,3 +49,4 @@ def suggest_skills(username):
     print("Predicted Keywords: ", predicted_keywords, "\n\n\n")
 
     return predicted_keywords
+ 
